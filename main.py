@@ -1,22 +1,18 @@
 import serial
 import sqlite3
+
+
 con = sqlite3.connect('tessere.db')
-
-# s = serial.Serial("/dev/serial/port1", 115200)
-# s.write(b"Hello from serial port")
-
 cur = con.cursor()
 tessere = []
 for row in cur.execute('SELECT id_tessera FROM tessere_unimore'):
     tessere.append(row[0])
-
 con.close()
 print(tessere)
 
-#stringNFC=b"AA 73 95 19"
 
-#s = serial.Serial('COM3')
-s = serial.Serial('/dev/tty.usbmodem101')
+#s = serial.Serial('COM3') #WINDOWS
+s = serial.Serial('/dev/tty.usbmodem101') #MACOS
 while True:
     res = s.readline()
     res = res.decode("utf-8")[:-2]
