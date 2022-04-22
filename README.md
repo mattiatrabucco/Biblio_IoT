@@ -3,6 +3,7 @@
 
 TODO Python/Arduino:
 
-- Tornello OUT
-- Tabella counter in db
-- Tabella log
+- [x] Tornello IN
+- [ ] Tornello OUT
+- [ ] Tabella counter in db
+- [ ] Tabella log
