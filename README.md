@@ -4,6 +4,8 @@
 TODO Python/Arduino:
 
 - [x] Tornello IN
-- [ ] Tornello OUT
+- - [ ] Testing
+- [x] Tornello OUT
+- - [ ] Testing
 - [ ] Tabella counter in db
 - [ ] Tabella log
