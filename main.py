@@ -30,8 +30,22 @@ def insert_in_db(table, value, db_name):
     con.commit()
     con.close()
 
-def insert_in_bibliomo(value):
-    insert_in_db("biblio_ingmo_current", value, "tessere.db")
+def insert_in_bibliomo(card_id):
+    insert_in_db("biblio_ingmo_current", card_id, "tessere.db")
+
+# BE CAREFUL: NOT SAFE FROM SQL INJECTION!
+def del_from_db(table, column, value, db_name):
+    con = sqlite3.connect(db_name)
+    cur = con.cursor()
+
+    t = (value,)
+    cur.execute(f"DELETE FROM {table} WHERE {column} = (?)", t)
+    
+    con.commit()
+    con.close()
+
+def remove_from_bibliomo(card_id):
+    del_from_db("biblio_ingmo_current", "id_tessera", card_id, "tessere.db")
 
 def setup_serial_connection():
     # ----- WINDOWS -----
@@ -56,15 +70,14 @@ def main_loop(authorized_cards, arduino_serial):
             
             card_id = line_from_serial[-11:]
 
-            if NFCreader_id == '0': # GOING IN
-                
+            if card_id in authorized_cards: # If it's an authorized Unimore card
                 #print(card_id)
-                
-                if card_id in authorized_cards: # If it's an authorized Unimore card
-                    
-                    current_cards = collect_current_cards()
 
-                    if card_id not in current_cards: # If it's not already inside
+                # GOING IN 
+                if NFCreader_id == '0':    
+                    cards_already_inside = collect_current_cards()
+
+                    if card_id not in cards_already_inside: # If it's not already inside
                         print("OK: authorized card can enter")
                         arduino_serial.write(b"OK\n")
 
@@ -73,11 +86,29 @@ def main_loop(authorized_cards, arduino_serial):
                     else:
                         print("ERROR: authorized card already inside")
                         arduino_serial.write(b"ERROR: already inside\n") 
+                
+                # GOING OUT
+                elif NFCreader_id == '1': 
+                    cards_already_inside = collect_current_cards()
 
+                    if card_id in cards_already_inside: # If it's inside
+                        print("OK: authorized card can exit")
+                        arduino_serial.write(b"OK\n")
+
+                        remove_from_bibliomo(card_id)
+
+                    else:
+                        print("ERROR: authorized card not inside")
+                        arduino_serial.write(b"ERROR: not inside\n") 
+                
+                # ERROR
                 else:
-                    print("ERROR: not authorized card")
-                    arduino_serial.write(b"ERROR: not authorized\n")
-       
+                    print("READER ERROR")
+
+            else:
+                print("ERROR: not authorized card")
+                arduino_serial.write(b"ERROR: not authorized\n")    
+
 
 def main():
     authorized_cards = collect_authorized_cards()
