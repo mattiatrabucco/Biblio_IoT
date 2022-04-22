@@ -6,7 +6,8 @@ import serial
 
 stringNFC=b"Reader 0: Card UID: AA 73 95 19\r\n"
 
-s = serial.Serial('COM3')
+#s = serial.Serial('COM3')
+s = serial.Serial('/dev/tty.usbmodem101')
 while True:
     res = s.readline()
     print(res)

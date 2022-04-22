@@ -1,11 +1,8 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-
-
 #define GREENLED 3
 #define REDLED 2
-
 
 #define SS_PIN 40
 #define RST_PIN 5
@@ -49,32 +46,33 @@ for (uint8_t reader = 0; reader < NR_OF_READERS; reader++) {
       Serial.print(F(": Card UID:"));
       dump_byte_array(mfrc522[reader].uid.uidByte, mfrc522[reader].uid.size);
       Serial.println();
-      Serial.print(F("PICC type: "));
-      MFRC522::PICC_Type piccType = mfrc522[reader].PICC_GetType(mfrc522[reader].uid.sak);
-      Serial.println(mfrc522[reader].PICC_GetTypeName(piccType));
+      //Serial.print(F("PICC type: "));
+      //MFRC522::PICC_Type piccType = mfrc522[reader].PICC_GetType(mfrc522[reader].uid.sak);
+      //Serial.println(mfrc522[reader].PICC_GetTypeName(piccType));
       
-      char c='\n';
       String stringa="";
-      //ASPETTO RISPOSTA DA MAINPY
+      char c='\n';
       
-      //if(Serial.available()) {
       while(stringa==""){
             stringa = Serial.readStringUntil(c);
             //Serial.println(stringa);
       }
-      if (stringa == "OK\n"){
+      if (stringa == "OK"){
         digitalWrite(GREENLED, HIGH);
         digitalWrite(REDLED, LOW);
       }
-      delay(3000);
+
+      delay(1000);
+
       digitalWrite(REDLED, HIGH);
       digitalWrite(GREENLED, LOW);
+      
       // Halt PICC
       mfrc522[reader].PICC_HaltA();
       // Stop encryption on PCD
       mfrc522[reader].PCD_StopCrypto1();
-    } //if (mfrc522[reader].PICC_IsNewC
-  } //for(uint8_t reader  
+    } 
+  } 
 
 }
 
