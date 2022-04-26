@@ -77,7 +77,8 @@ WSGI_APPLICATION = 'biblioSite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
+        #'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
+        'NAME': 'C:\\Users\\ASUS\\Desktop\\IOT\\Biblio_IoT\\tessere.db',
     }
 }
 
