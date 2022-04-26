@@ -17,4 +17,4 @@ Biblio_IoT.ino
 
 DB
 - [ ] Tabella counter
-- [ ] Tabella log
+- [x] Tabella log
