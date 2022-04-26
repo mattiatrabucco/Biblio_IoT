@@ -132,6 +132,7 @@ class TessereUnimore(models.Model):
     facolta = models.TextField(blank=True, null=True)
     id_tessera = models.TextField(blank=True, primary_key=True)
     mail = models.TextField(unique=True, blank=True, null=True)
+    password = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'tessere_unimore'

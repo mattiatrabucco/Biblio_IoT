@@ -77,8 +77,8 @@ WSGI_APPLICATION = 'biblioSite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
-        'NAME': 'C:\\Users\\ASUS\\Desktop\\IOT\\Biblio_IoT\\tessere.db',
+        'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
+        #'NAME': 'C:\\Users\\ASUS\\Desktop\\IOT\\Biblio_IoT\\tessere.db',
     }
 }
 
@@ -105,9 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'it-it'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Rome'
 
 USE_I18N = True
 
