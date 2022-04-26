@@ -1,5 +1,6 @@
 import serial
 import sqlite3
+from datetime import datetime
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def select_from_db(what, table, db_name):
@@ -30,8 +31,27 @@ def insert_in_db(table, value, db_name):
     con.commit()
     con.close()
 
+def log_insert(cardid):
+    con = sqlite3.connect("tessere.db")
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO log_ingmo VALUES (?, ?, ?)", (cardid, datetime.now(), "IN"))
+    
+    con.commit()
+    con.close()
+
+def log_remove(cardid):
+    con = sqlite3.connect("tessere.db")
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO log_ingmo VALUES (?, ?, ?)", (cardid, datetime.now(), "OUT"))
+    
+    con.commit()
+    con.close()
+
 def insert_in_bibliomo(card_id):
     insert_in_db("biblio_ingmo_current", card_id, "tessere.db")
+    log_insert(card_id)
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def del_from_db(table, column, value, db_name):
@@ -46,6 +66,7 @@ def del_from_db(table, column, value, db_name):
 
 def remove_from_bibliomo(card_id):
     del_from_db("biblio_ingmo_current", "id_tessera", card_id, "tessere.db")
+    log_remove(card_id)
 
 def setup_serial_connection():
     # ----- WINDOWS -----
@@ -53,6 +74,44 @@ def setup_serial_connection():
 
     # -----  MACOS  -----
     return serial.Serial('/dev/tty.usbmodem1101')
+
+# True = GOING IN, False = GOING OUT
+def update_counter(mode):
+    con = sqlite3.connect("tessere.db")
+    cur = con.cursor()
+    
+    val = cur.execute("SELECT count, capienza FROM biblioteche WHERE nome='ingmo'")
+    
+    for v in val:
+        val = v #eventualmente vedi next()
+
+    count = val[0]
+    capacity = val[1]
+
+    if mode:
+        #GOING IN
+        if count >= capacity:
+            #BIBLIO FULL
+            return False
+        count = count + 1
+        
+        cur.execute(f"UPDATE biblioteche SET count='{count}' WHERE nome='ingmo'")
+    
+        con.commit()
+    else:
+        #GOING OUT
+        if count == 0:
+            #DB ERROR!
+            return False
+        count = count - 1
+        
+        cur.execute(f"UPDATE biblioteche SET count='{count}' WHERE nome='ingmo'")
+    
+        con.commit()
+
+
+    con.close()
+    return True
 
 def main_loop(authorized_cards, arduino_serial):
     
@@ -78,10 +137,14 @@ def main_loop(authorized_cards, arduino_serial):
                     cards_already_inside = collect_current_cards()
 
                     if card_id not in cards_already_inside: # If it's not already inside
-                        print("OK: authorized card can enter")
-                        arduino_serial.write(b"OK\n")
 
-                        insert_in_bibliomo(card_id)
+                        if update_counter(True):
+                            print("OK: authorized card can enter")
+                            arduino_serial.write(b"OK\n")
+                            insert_in_bibliomo(card_id)
+                        else:
+                            print("ERROR: biblio full")
+                            arduino_serial.write(b"ERROR: full\n") 
 
                     else:
                         print("ERROR: authorized card already inside")
@@ -92,10 +155,15 @@ def main_loop(authorized_cards, arduino_serial):
                     cards_already_inside = collect_current_cards()
 
                     if card_id in cards_already_inside: # If it's inside
-                        print("OK: authorized card can exit")
-                        arduino_serial.write(b"OK\n")
 
-                        remove_from_bibliomo(card_id)
+                        if update_counter(False):
+                            print("OK: authorized card can exit")
+                            arduino_serial.write(b"OK\n")
+                            remove_from_bibliomo(card_id)
+                        else:
+                            print("ERROR: db error")
+                            arduino_serial.write(b"ERROR: db\n") 
+                        
 
                     else:
                         print("ERROR: authorized card not inside")
