@@ -24,10 +24,16 @@ Biblio_IoT.ino
 DB
 - [x] Tabella counter
 - [x] Tabella log
-- [ ] Add mail column in Tessere
+- [x] Add mail column in Tessere
 
 DJANGO
 - [ ] Login/Register user
-- [ ] Homepage
+- [ ] Registration controllare campo null
+- [ ] Registration controllare campo mail che sia unimore
+- [ ] Registration controllare campo esadecimale card_id
+- [ ] Login non funziona con utenti diversi da django admin
+- [ ] Logout
+- [ ] Salting password
+- [ ] Homepage con link a registrati e login
 - [ ] Layout admin add user page
 - [ ] UX
