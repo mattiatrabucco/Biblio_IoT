@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from xml.parsers.expat import model
 from django.db import models
 
 
@@ -130,6 +131,7 @@ class TessereUnimore(models.Model):
     indirizzo = models.TextField(blank=True, null=True)
     facolta = models.TextField(blank=True, null=True)
     id_tessera = models.TextField(blank=True, primary_key=True)
+    mail = models.TextField(unique=True, blank=True, null=True)
 
     class Meta:
         db_table = 'tessere_unimore'
