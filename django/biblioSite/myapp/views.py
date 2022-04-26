@@ -7,9 +7,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
-
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 from .models import TessereUnimore
 
 #path('', views.index, name='index')
@@ -45,6 +44,8 @@ def register(request):
         if utente.id_tessera == card_id:
             utente.password=psw
             utente.save()
+            user = User.objects.create_user(mail,email=None,password=psw)
+            user.save()
             return HttpResponse(template.render({ 'ok': True }, request))
 
     except (KeyError, TessereUnimore.DoesNotExist):
