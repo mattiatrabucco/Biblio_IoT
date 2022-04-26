@@ -27,11 +27,11 @@ DB
 - [x] Add mail column in Tessere
 
 DJANGO
-- [ ] Login/Register user
+- [x] Login/Register user
 - [ ] Registration controllare campo null
 - [ ] Registration controllare campo mail che sia unimore
 - [ ] Registration controllare campo esadecimale card_id
-- [ ] Login non funziona con utenti diversi da django admin
+- [x] Login non funziona con utenti diversi da django admin
 - [ ] Logout
 - [ ] Salting password
 - [x] Secret key exposed (now .env var)
