@@ -1,1 +1,3 @@
 pyserial
+django
+python-decouple

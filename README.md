@@ -34,7 +34,7 @@ DJANGO
 - [ ] Login non funziona con utenti diversi da django admin
 - [ ] Logout
 - [ ] Salting password
-- [ ] Secret key exposed (https://stackoverflow.com/questions/64208678/hiding-secret-key-in-django-project-on-github-after-uploading-project)
+- [x] Secret key exposed (now .env var)
 - [ ] Homepage con link a registrati e login
 - [ ] Layout admin add user page
 - [ ] UX

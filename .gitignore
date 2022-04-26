@@ -1,3 +1,4 @@
 env
+django/biblioSite/.env
 .vscode
 .DS_Store
