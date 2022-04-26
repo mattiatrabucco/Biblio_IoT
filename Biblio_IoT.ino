@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
+#include <LiquidCrystal_I2C.h>
 
 #define GREENLED 3
 #define REDLED 2
@@ -14,9 +15,12 @@
 
 #define NR_OF_READERS 2
 
+//RFID reader requirements
 byte ssPins[] = {SS1_PIN, SS_PIN};
 MFRC522 mfrc522[NR_OF_READERS];
 
+//Display requirements
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
   Serial.begin(9600);
@@ -31,6 +35,11 @@ void setup() {
     Serial.print(F(": "));
     mfrc522[reader].PCD_DumpVersionToSerial();
   }
+
+  //Display setup:
+  lcd.init();                    //initialize
+  lcd.backlight();               //turn on backlight
+  lcd.print("Biblio IoT"); //display startup message
 
   //LED setup:
   pinMode(GREENLED, OUTPUT);
@@ -56,7 +65,7 @@ void loop() {
       String stringa="";
       char c='\n';
 
-      delay(28); //attendo risposta da python
+      delay(28); //waiting python script
       
       while(stringa==""){
             stringa = Serial.readStringUntil(c);
@@ -64,9 +73,25 @@ void loop() {
       if (stringa == "OK"){
         digitalWrite(GREENLED, HIGH);
         digitalWrite(REDLED, LOW);
+
+        lcd.clear();            //Clear display
+        lcd.setCursor(0, 0);    //Write on the first row
+        if (reader == 0)
+        {
+          lcd.print("Benvenuto,"); //Print title on external display
+        }
+        else if (reader == 1) {
+          lcd.print("Arrivederci,"); //Print title on external display
+        }
+        
+        lcd.setCursor(0, 1);    //Write on the second row
+        dump_byte_array_to_lcd(mfrc522[reader].uid.uidByte, mfrc522[reader].uid.size);
       }
 
       delay(800);
+
+      lcd.clear(); //reset display
+      lcd.setCursor(0, 0);
 
       digitalWrite(REDLED, HIGH);
       digitalWrite(GREENLED, LOW);
@@ -84,5 +109,13 @@ void dump_byte_array(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], HEX);
+  }
+}
+
+// Helper routine to dump a byte array as hex values to LCD display.
+void dump_byte_array_to_lcd(byte *buffer, byte bufferSize) {
+  for (byte i = 0; i < bufferSize; i++) {
+    lcd.print(buffer[i] < 0x10 ? " 0" : " ");
+    lcd.print(buffer[i], HEX);
   }
 }
