@@ -28,13 +28,15 @@ DB
 
 DJANGO
 - [x] Login/Register user
-- [ ] Registration controllare campo null
-- [ ] Registration controllare campo mail che sia unimore
+- [x] Registration controllare campo null
+- [x] Registration controllare campo mail che sia unimore
 - [ ] Registration controllare campo esadecimale card_id
 - [x] Login non funziona con utenti diversi da django admin
 - [ ] Logout
 - [ ] Salting password
 - [x] Secret key exposed (now .env var)
-- [ ] Homepage con link a registrati e login
+- [x] Homepage con link a registrati 
+- [ ] Homepage con link a login
 - [ ] Layout admin add user page
 - [ ] UX
+- [x] Login con username unimore e non con mail

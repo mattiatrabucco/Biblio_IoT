@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from datetime import datetime
 from django.http import HttpResponse
 from django.template import loader
@@ -33,8 +34,9 @@ def register(request):
         # GET
         return HttpResponse(template.render({ 'first': True }, request))
         #return HttpResponse("Errore utente!")
-    
-    if len(mail) < 3:
+    if mail==NULL or psw==NULL or card_id==NULL:
+        return HttpResponse(template.render({ 'errore': True }, request))
+    if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
         return HttpResponse(template.render({ 'errore': True }, request))
     if len(psw) < 6:
         return HttpResponse(template.render({ 'errore': True }, request))
@@ -44,7 +46,8 @@ def register(request):
         if utente.id_tessera == card_id:
             utente.password=psw
             utente.save()
-            user = User.objects.create_user(mail,email=None,password=psw)
+            username=mail[0:6]#lo username per il login saranno solo i primi 6 numeri della mail
+            user = User.objects.create_user(username,email=mail,password=psw)
             user.save()
             return HttpResponse(template.render({ 'ok': True }, request))
 
