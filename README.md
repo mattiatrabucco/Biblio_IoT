@@ -36,7 +36,7 @@ DJANGO
 - [ ] Salting password
 - [x] Secret key exposed (now .env var)
 - [x] Homepage con link a registrati 
-- [ ] Homepage con link a login
+- [x] Homepage con link a login
 - [ ] Layout admin add user page
 - [ ] UX
 - [x] Login con username unimore e non con mail
