@@ -3,7 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.template import loader
 
-
+from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -29,7 +29,7 @@ def checkHEX(card_id):
 
 def register(request):
     template = loader.get_template('register.html')
-    context = {}
+    #context = {}
 
     try:
         mail = request.POST['mail']
@@ -73,6 +73,15 @@ def home(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+@login_required
+def admin_home(request):
+    template = loader.get_template('admin.html')
+    #NON FUNZIONA CE QUALCOSA CHE NON FUNZIONA NELLA HAS_VIEW_PERMISSION MAGARI MEGLIO CMABIARE METODO
+    #if admin.ModelAdmin.has_view_permission(request):
+    #    context = {"val":'1'}
+   
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def logout_view(request):
     logout(request)
