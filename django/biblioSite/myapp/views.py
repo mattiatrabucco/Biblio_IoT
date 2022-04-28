@@ -20,6 +20,13 @@ def index(request):
     return HttpResponse(template.render(context, request))
     #return HttpResponse("Hello, world. You're at the ecommerce index.")
 
+def checkHEX(card_id):
+    listaHEX=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f',' ']
+    for i in card_id:
+        if i not in listaHEX:
+            return False
+    return True
+
 def register(request):
     template = loader.get_template('register.html')
     context = {}
@@ -41,7 +48,8 @@ def register(request):
         return HttpResponse(template.render({ 'errore': True }, request))
     if len(psw) < 6:
         return HttpResponse(template.render({ 'errore': True }, request))
-    
+    if checkHEX(card_id) or len(card_id)!=11 :
+        return HttpResponse(template.render({ 'errore': True }, request))
     try:
         utente = TessereUnimore.objects.get(mail=mail)
         if utente.id_tessera == card_id:

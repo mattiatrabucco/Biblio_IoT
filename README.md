@@ -30,7 +30,7 @@ DJANGO
 - [x] Login/Register user
 - [x] Registration controllare campo null
 - [x] Registration controllare campo mail che sia unimore
-- [ ] Registration controllare campo esadecimale card_id
+- [x] Registration controllare campo esadecimale card_id  -->CREATO FUNZIONE MAGARI OTTIMIZZABILE
 - [x] Login non funziona con utenti diversi da django admin
 - [x] Logout
 - [ ] Salting password
