@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from .models import TessereUnimore
 
 #path('', views.index, name='index')
@@ -61,5 +62,12 @@ def register(request):
 def home(request):
     #product_list = Product.objects.all().order_by('name') #.get(pk=post_id) .order_by('-pub_date')[:5]
     template = loader.get_template('home.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def logout_view(request):
+    logout(request)
+    template = loader.get_template('logout.html')
     context = {}
     return HttpResponse(template.render(context, request))

@@ -32,7 +32,7 @@ DJANGO
 - [x] Registration controllare campo mail che sia unimore
 - [ ] Registration controllare campo esadecimale card_id
 - [x] Login non funziona con utenti diversi da django admin
-- [ ] Logout
+- [x] Logout
 - [ ] Salting password
 - [x] Secret key exposed (now .env var)
 - [x] Homepage con link a registrati 
