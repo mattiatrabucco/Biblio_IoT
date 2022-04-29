@@ -3,14 +3,16 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.template import loader
 
+
 from django.contrib import admin
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Permission
-from django.contrib.auth import logout
+from django.contrib.auth.models import User
+from django.contrib.auth import logout, get_user_model
 from .models import TessereUnimore
 
 #path('', views.index, name='index')
@@ -76,13 +78,17 @@ def home(request):
 @login_required
 def admin_home(request):
     template = loader.get_template('admin.html')
-    #NON FUNZIONA CE QUALCOSA CHE NON FUNZIONA NELLA HAS_VIEW_PERMISSION MAGARI MEGLIO CMABIARE METODO
-   
+    
+    var=1# if one i am a normal user
+    
+    #ERRORE NELL HTML NON DISTINGUO LE DUE CHIAMATE SBAGLIO AD USARE IL CAMPO CONTEXT
+    if request.user.is_superuser:
+        var=0 # if zero i am a superuser
+        context = {"superuser":var}
+        print(request.user.is_superuser)
+        return HttpResponse(template.render(context, request))
+    var=1
     context = {}
-    
-    #if User.id.is_superuser():
-    #    context = {"val":'1'}
-    
     return HttpResponse(template.render(context, request))
 
 def logout_view(request):
