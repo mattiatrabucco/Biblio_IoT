@@ -1,6 +1,7 @@
 {%if superuser %}
-    NON HAI I PERMESSI PER ACCEDERE
+<h1>SEI NELLA ADMIN PAGE</h1>
+    
 {%else%}
-    SEI NELLA ADMIN PAGE
+    <h1>NON HAI I PERMESSI PER ACCEDERE CON QUESTE CREDENZIALI</h1>
 {%endif%}
-
+<p><a href="{% url 'myapp:index' %}">Torna alla home</a></p>

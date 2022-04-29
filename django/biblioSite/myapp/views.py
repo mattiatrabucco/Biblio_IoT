@@ -78,17 +78,16 @@ def home(request):
 @login_required
 def admin_home(request):
     template = loader.get_template('admin.html')
-    
-    var=1# if one i am a normal user
-    
-    #ERRORE NELL HTML NON DISTINGUO LE DUE CHIAMATE SBAGLIO AD USARE IL CAMPO CONTEXT
+
     if request.user.is_superuser:
-        var=0 # if zero i am a superuser
-        context = {"superuser":var}
-        print(request.user.is_superuser)
+        context = {
+            "superuser":request.user.username
+            #"lista":request.user.get_all()
+        }
+        #print(request.user.get)
         return HttpResponse(template.render(context, request))
-    var=1
-    context = {}
+
+    context = {"superuser":None}
     return HttpResponse(template.render(context, request))
 
 def logout_view(request):
