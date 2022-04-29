@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.contrib.auth import logout
 from .models import TessereUnimore
 
@@ -77,10 +77,12 @@ def home(request):
 def admin_home(request):
     template = loader.get_template('admin.html')
     #NON FUNZIONA CE QUALCOSA CHE NON FUNZIONA NELLA HAS_VIEW_PERMISSION MAGARI MEGLIO CMABIARE METODO
-    #if admin.ModelAdmin.has_view_permission(request):
-    #    context = {"val":'1'}
    
     context = {}
+    
+    #if User.id.is_superuser():
+    #    context = {"val":'1'}
+    
     return HttpResponse(template.render(context, request))
 
 def logout_view(request):
