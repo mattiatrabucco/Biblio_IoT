@@ -1,6 +1,10 @@
 {%if superuser %}
 <h1>SEI NELLA ADMIN PAGE</h1>
-    
+    <p>
+        <a href="{% url 'myapp:add_student' %}">Aggiungi uno studente</a><br>
+        <a href="{% url 'myapp:list_student' %}">Visualizza elenco studenti registrati</a><br>
+        <a href="{% url 'myapp:remove_student' %}">Rimuovi uno studente</a><br>
+    </p>
 {%else%}
     <h1>NON HAI I PERMESSI PER ACCEDERE CON QUESTE CREDENZIALI</h1>
 {%endif%}

@@ -90,8 +90,48 @@ def admin_home(request):
     context = {"superuser":None}
     return HttpResponse(template.render(context, request))
 
+
 def logout_view(request):
     logout(request)
     template = loader.get_template('logout.html')
     context = {}
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def add_student(request):
+    template = loader.get_template('add_student.html')
+
+    if request.user.is_superuser:
+        context = {
+            "superuser":request.user.username
+        }
+        return HttpResponse(template.render(context, request))
+
+    context = {"superuser":None}
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def list_student(request):
+    template = loader.get_template('list_student.html')
+
+    if request.user.is_superuser:
+        context = {
+            "superuser":request.user.username
+        }
+        return HttpResponse(template.render(context, request))
+
+    context = {"superuser":None}
+    return HttpResponse(template.render(context, request))
+
+@login_required
+def remove_student(request):
+    template = loader.get_template('remove_student.html')
+
+    if request.user.is_superuser:
+        context = {
+            "superuser":request.user.username
+        }
+        return HttpResponse(template.render(context, request))
+
+    context = {"superuser":None}
     return HttpResponse(template.render(context, request))
