@@ -1,2 +1,49 @@
-ADD STUDENT
-<p><a href="{% url 'myapp:admin_home' %}">Torna alla AdminHome</a></p>
+{% extends "base.html" %}
+{% comment %} Page to add users by admin home {% endcomment %} 
+
+{%if superuser %}
+{% block head %}
+    <title>Aggiungi studente</title>
+{% endblock %}
+{% block body %}
+    <header>
+        <h1>Aggiungi studente</h1>
+    </header> 
+    <section>
+        {% if first %}
+            <p>inserisci mail, l'ID tessera NFC, il nome, il cognome, la facolta', luogo di residenza </p>
+        {% endif %}
+        {% if errore %}
+            <p>Errore nella compilazione del form.</p>
+        {% endif %}
+        {% if ok %}
+            <p>studente inserito nel database con successo</p>
+            <p><a href="{% url 'myapp:admin_home' %}">Torna alla AdminHome</a></p>
+        {% endif %}
+        <form method="post"> 
+            {% csrf_token %} 
+            <label for="user">Mail Unimore: </label>
+            <input type="mail" name="mail" id="mail"/> <br>
+            
+            <label for="card_id">ID tessera NFC: </label>
+            <input type="text" name="card_id" id="card_id"/> <br>
+            <label for="nome">Nome: </label>
+            <input type="nome" name="nome" id="nome"/> <br>
+            <label for="cognome">Cognome: </label>
+            <input type="cognome" name="cognome" id="cognome"/> <br>
+            <label for="facoltà">Facoltà: </label>
+            <input type="facoltà" name="facoltà" id="facoltà"/> <br>
+            <label for="residenza">Residenza: </label>
+            <input type="residenza" name="residenza" id="residenza"/> <br>
+            <input type="submit" value="Aggiungi" /><br><br>
+            Ricordare allo studente che il login al sito con username si intendono i primi 6 numeri della mail universitaria, per esempio<br>
+            mail    ------->[123456@studenti.unimore.it] <br>
+            username ------>[123456]<br>
+        </form>
+        <p><a href="{% url 'myapp:admin_home' %}">Torna alla AdminHome</a></p>
+    </section>
+    {% endblock %}
+{%else%}
+    <h1>NON HAI I PERMESSI PER ACCEDERE CON QUESTE CREDENZIALI</h1>
+{%endif%}
+<p><a href="{% url 'myapp:index' %}">Torna alla home</a></p>

@@ -82,9 +82,7 @@ def admin_home(request):
     if request.user.is_superuser:
         context = {
             "superuser":request.user.username
-            #"lista":request.user.get_all()
         }
-        #print(request.user.get)
         return HttpResponse(template.render(context, request))
 
     context = {"superuser":None}
@@ -100,13 +98,47 @@ def logout_view(request):
 @login_required
 def add_student(request):
     template = loader.get_template('add_student.html')
-
     if request.user.is_superuser:
-        context = {
-            "superuser":request.user.username
-        }
-        return HttpResponse(template.render(context, request))
-
+        try:
+            mail = request.POST['mail']
+            card_id = request.POST['card_id']
+            nome = request.POST['nome']
+            cognome = request.POST['cognome']
+            facolta = request.POST['facoltà']
+            residenza = request.POST['residenza']
+        except (KeyError):
+            context = {
+            "superuser":request.user.username,
+            "first": True
+            }
+            return HttpResponse(template.render(context, request))
+        if mail==NULL or nome ==NULL or cognome==NULL or residenza==NULL or facolta==NULL or card_id==NULL:
+            return HttpResponse(template.render({ 'errore': True }, request))
+        if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
+            return HttpResponse(template.render({ 'errore': True }, request))
+        if len(nome) > 20 and len(cognome)> 20 and len(residenza)> 30 and len(facolta) > 30:
+            return HttpResponse(template.render({ 'errore': True }, request))
+        if checkHEX(card_id) or len(card_id)!=11 :
+            return HttpResponse(template.render({ 'errore': True }, request))
+        try:
+            utente = TessereUnimore.objects.create()
+            utente.mail=mail
+            utente.card_id=card_id
+            utente.nome=nome
+            utente.cognome=cognome
+            utente.facolta=facolta
+            utente.residenza=residenza
+            utente.save()
+            context = {
+                "superuser":request.user.username,
+                "first": True,
+                "ok": True
+            }
+            return HttpResponse(template.render(context, request))
+    
+        except (KeyError, TessereUnimore.DoesNotExist):
+            return HttpResponse(template.render({ 'errore': True }, request))
+    
     context = {"superuser":None}
     return HttpResponse(template.render(context, request))
 
@@ -126,12 +158,44 @@ def list_student(request):
 @login_required
 def remove_student(request):
     template = loader.get_template('remove_student.html')
-
     if request.user.is_superuser:
-        context = {
-            "superuser":request.user.username
-        }
-        return HttpResponse(template.render(context, request))
-
+        try:
+            mail = request.POST['mail']
+            card_id = request.POST['card_id']
+        except (KeyError):
+            context = {
+            "superuser":request.user.username,
+            "first": True
+            }
+            return HttpResponse(template.render(context, request))
+        if mail==NULL or card_id==NULL:
+            print("errore NULL")
+            return HttpResponse(template.render({ 'errore': True }, request))
+        if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
+            print("errore mail")
+            return HttpResponse(template.render({ 'errore': True }, request))
+        if not checkHEX(card_id) or len(card_id)!=11 :
+            print("errore card")
+            return HttpResponse(template.render({ 'errore': True }, request))
+        
+        utente = TessereUnimore.objects.get(mail=mail)
+        if utente.mail !=mail or utente.id_tessera!=card_id:
+            return HttpResponse(template.render({ 'errore': True }, request))
+        try:
+            utente = TessereUnimore.objects.get(mail=mail)
+            user = User.objects.get(username=utente.mail[0:6])
+            user.delete()
+            utente = TessereUnimore.objects.get(mail=mail)
+            utente.delete()
+            context = {
+                "superuser":request.user.username,
+                "first": True,
+                "ok": True
+            }
+            return HttpResponse(template.render(context, request))
+    
+        except (KeyError, TessereUnimore.DoesNotExist):
+            return HttpResponse(template.render({ 'errore': True }, request))
+    
     context = {"superuser":None}
     return HttpResponse(template.render(context, request))
