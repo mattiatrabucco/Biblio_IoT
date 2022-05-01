@@ -50,7 +50,7 @@ def register(request):
         return HttpResponse(template.render({ 'errore': True }, request))
     if len(psw) < 6:
         return HttpResponse(template.render({ 'errore': True }, request))
-    if checkHEX(card_id) or len(card_id)!=11 :
+    if not checkHEX(card_id) or len(card_id)!=11 :
         return HttpResponse(template.render({ 'errore': True }, request))
     try:
         utente = TessereUnimore.objects.get(mail=mail)
@@ -118,7 +118,7 @@ def add_student(request):
             return HttpResponse(template.render({ 'errore': True }, request))
         if len(nome) > 20 and len(cognome)> 20 and len(residenza)> 30 and len(facolta) > 30:
             return HttpResponse(template.render({ 'errore': True }, request))
-        if checkHEX(card_id) or len(card_id)!=11 :
+        if not checkHEX(card_id) or len(card_id)!=11 :
             return HttpResponse(template.render({ 'errore': True }, request))
         try:
             utente = TessereUnimore.objects.create()
