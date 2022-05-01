@@ -106,6 +106,7 @@ def add_student(request):
             cognome = request.POST['cognome']
             facolta = request.POST['facoltà']
             residenza = request.POST['residenza']
+            print(card_id)
         except (KeyError):
             context = {
             "superuser":request.user.username,
@@ -121,13 +122,7 @@ def add_student(request):
         if not checkHEX(card_id) or len(card_id)!=11 :
             return HttpResponse(template.render({ 'errore': True }, request))
         try:
-            utente = TessereUnimore.objects.create()
-            utente.mail=mail
-            utente.card_id=card_id
-            utente.nome=nome
-            utente.cognome=cognome
-            utente.facolta=facolta
-            utente.residenza=residenza
+            utente = TessereUnimore.objects.create(mail=mail,id_tessera=card_id,nome=nome,cognome=cognome,facolta=facolta,indirizzo=residenza)
             utente.save()
             context = {
                 "superuser":request.user.username,
