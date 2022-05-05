@@ -22,9 +22,7 @@ def checkHEX(card_id):
 #path('', views.index, name='index')
 def index(request):
     template = loader.get_template('index.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
-    #return HttpResponse("Hello, world. You're at the ecommerce index.")
+    return HttpResponse(template.render({}, request))
 
 #path('register/', views.register, name='register')
 def register(request):
