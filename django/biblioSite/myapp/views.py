@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+#from asyncio.windows_events import NULL
 from datetime import datetime
 from django.http import HttpResponse
 from django.template import loader
@@ -29,12 +29,12 @@ def checkHEX(card_id):
             return False
     return True
 
+#path('register/', views.register, name='register')
 def register(request):
     template = loader.get_template('register.html')
-    #context = {}
 
     try:
-        mail = request.POST['mail']
+        mail = request.POST['email']
         card_id = request.POST['card_id']
         psw = request.POST['password']
         print(mail)
@@ -43,10 +43,12 @@ def register(request):
     except (KeyError):
         # GET
         return HttpResponse(template.render({ 'first': True }, request))
-        #return HttpResponse("Errore utente!")
-    if mail==NULL or psw==NULL or card_id==NULL:
-        return HttpResponse(template.render({ 'errore': True }, request))
-    if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
+
+    # Check mail:
+    if mail is None or len(mail) != 6: # EXAMPLE: 123456@studenti.unimore.it
+        return HttpResponse(template.render({ 'errore_mail': True }, request))
+
+    if psw is None or card_id is None: 
         return HttpResponse(template.render({ 'errore': True }, request))
     if len(psw) < 6:
         return HttpResponse(template.render({ 'errore': True }, request))
@@ -113,7 +115,7 @@ def add_student(request):
             "first": True
             }
             return HttpResponse(template.render(context, request))
-        if mail==NULL or nome ==NULL or cognome==NULL or residenza==NULL or facolta==NULL or card_id==NULL:
+        if mail is None or nome is None or cognome is None or residenza is None or facolta is None or card_id is None:
             return HttpResponse(template.render({ 'errore': True }, request))
         if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
             return HttpResponse(template.render({ 'errore': True }, request))
@@ -163,7 +165,7 @@ def remove_student(request):
             "first": True
             }
             return HttpResponse(template.render(context, request))
-        if mail==NULL or card_id==NULL:
+        if mail is None or card_id is None:
             print("errore NULL")
             return HttpResponse(template.render({ 'errore': True }, request))
         if len(mail) != 26 or "@studenti.unimore.it" not in mail : #26 is the number of character of all kind of mail
