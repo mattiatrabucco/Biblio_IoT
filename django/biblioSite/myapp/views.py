@@ -58,13 +58,15 @@ def register(request):
 
     email = email_number + "@studenti.unimore.it"
     
+    # Insert new user:
     try:
         tessere_user = TessereUnimore.objects.get(mail=email)
         
         if tessere_user.id_tessera == card_id:
             tessere_user.password=psw # HELP: perchè non registrare solo il fatto che un utente sia registrato?
             tessere_user.save()
-            
+
+            # Insert in Django User:
             try:
                 django_user = User.objects.get(username=email_number)
             except (User.DoesNotExist):
