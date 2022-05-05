@@ -16,20 +16,15 @@ from django.contrib.auth import logout, get_user_model
 from .models import TessereUnimore
 import string
 
+def checkHEX(card_id):
+    return all(c in string.hexdigits for c in card_id)
+
 #path('', views.index, name='index')
 def index(request):
     template = loader.get_template('index.html')
     context = {}
     return HttpResponse(template.render(context, request))
     #return HttpResponse("Hello, world. You're at the ecommerce index.")
-
-
-def checkHEX(card_id):
-    """ listaHEX=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
-    for i in card_id:
-        if i not in listaHEX:
-            return False """
-    return all(c in string.hexdigits for c in card_id)
 
 #path('register/', views.register, name='register')
 def register(request):
