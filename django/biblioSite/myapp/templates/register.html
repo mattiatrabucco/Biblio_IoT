@@ -3,17 +3,17 @@
 {% comment %} Page to register users. {% endcomment %} 
 
 {% block head %}
-    <title>BiblioIoT | Sign up</title>
+    <title>BiblioIoT | Registrati</title>
 {% endblock %}
 
 {% block body %}
     <header>
         <h1>BiblioIoT</h1> 
-        <h2>Sign up</h2>
+        <h2>Registrati</h2>
     </header> 
     <section>
         {% if first %}
-            <p>Registrati qui inserendo mail UniMoRe, l'ID tessera NFC e la password:</p>
+            <p>Per registrarti inserisci mail UniMoRe, l'ID tessera NFC e la password nei campi sottostanti:</p>
         {% endif %}
 
         {% if email_number_error %}
@@ -27,8 +27,8 @@
         {% endif %}
 
         {% if ok %}
-            <p>Registration completed.</p>
-            <p><a href="{% url 'myapp:home' %}">Go to login</a></p>
+            <p>Registrazione completata!</p>
+            <p><a href="{% url 'myapp:home' %}">Vai al login.</a></p>
         {% endif %}
 
         <form method="post"> 
