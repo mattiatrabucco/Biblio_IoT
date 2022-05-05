@@ -14,8 +14,11 @@
         {% if first %}
             <p>Registrati qui inserendo mail UniMoRe, l'ID tessera NFC e la password:</p>
         {% endif %}
-        {% if errore_mail %}
+        {% if email_error %}
             <p>Errore nel campo mail.</p>
+        {% endif %}
+        {% if psw_error %}
+            <p>Errore nel campo password.</p>
         {% endif %}
         {% if ok %}
             <p>Registration completed.</p>

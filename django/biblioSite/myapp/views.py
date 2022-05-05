@@ -44,13 +44,15 @@ def register(request):
         # GET
         return HttpResponse(template.render({ 'first': True }, request))
 
-    # Check mail:
+    # Check email:
     if mail is None or len(mail) != 6: # EXAMPLE: 123456@studenti.unimore.it
-        return HttpResponse(template.render({ 'errore_mail': True }, request))
+        return HttpResponse(template.render({ 'email_error': True }, request))
 
-    if psw is None or card_id is None: 
-        return HttpResponse(template.render({ 'errore': True }, request))
-    if len(psw) < 6:
+    # Check password:
+    if psw is None or len(psw) < 8: 
+        return HttpResponse(template.render({ 'psw_error': True }, request))
+    
+    if card_id is None:
         return HttpResponse(template.render({ 'errore': True }, request))
     if not checkHEX(card_id) or len(card_id)!=11 :
         return HttpResponse(template.render({ 'errore': True }, request))
