@@ -3,23 +3,29 @@
 {% comment %} Page to register users. {% endcomment %} 
 
 {% block head %}
-    <title>BiblioSite | Signin</title>
+    <title>BiblioIoT | Sign up</title>
 {% endblock %}
 
 {% block body %}
     <header>
-        <h1>BiblioSite</h1> <h2>Signin Page</h2>
+        <h1>BiblioIoT</h1> 
+        <h2>Sign up</h2>
     </header> 
     <section>
         {% if first %}
             <p>Registrati qui inserendo mail UniMoRe, l'ID tessera NFC e la password:</p>
         {% endif %}
+
         {% if email_error %}
             <p>Errore nel campo mail.</p>
         {% endif %}
         {% if psw_error %}
             <p>Errore nel campo password.</p>
         {% endif %}
+        {% if card_id_error %}
+            <p>Errore nel campo ID tessera.</p>
+        {% endif %}
+
         {% if ok %}
             <p>Registration completed.</p>
             <p><a href="{% url 'myapp:home' %}">Go to login</a></p>
@@ -37,11 +43,9 @@
             <input type="password" name="password" id="password"/> <br><br>
 
             <input type="submit" value="Registrati" /><br><br>
-            per il login al sito con username si intendono i primi 6 numeri della mail universitaria, per esempio<br>
-            mail    ------->[123456@studenti.unimore.it] <br>
-            username ------>[123456]<br>
+            
         </form>
-        <a href="{% url 'myapp:index' %}">Torna alla pagina principale</a><br>
+        <p><a href="{% url 'myapp:index' %}">Torna alla home</a><br></p>
     </section>
     
 {% endblock %}

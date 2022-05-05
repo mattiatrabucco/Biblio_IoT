@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
 from .models import TessereUnimore
+import string
 
 #path('', views.index, name='index')
 def index(request):
@@ -22,12 +23,13 @@ def index(request):
     return HttpResponse(template.render(context, request))
     #return HttpResponse("Hello, world. You're at the ecommerce index.")
 
+
 def checkHEX(card_id):
-    listaHEX=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f',' ']
+    """ listaHEX=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F']
     for i in card_id:
         if i not in listaHEX:
-            return False
-    return True
+            return False """
+    return all(c in string.hexdigits for c in card_id)
 
 #path('register/', views.register, name='register')
 def register(request):
@@ -37,9 +39,9 @@ def register(request):
         mail = request.POST['email']
         card_id = request.POST['card_id']
         psw = request.POST['password']
-        print(mail)
-        print(card_id)
-        print(psw)
+        #print(mail)
+        #print(card_id)
+        #print(psw)
     except (KeyError):
         # GET
         return HttpResponse(template.render({ 'first': True }, request))
@@ -52,10 +54,13 @@ def register(request):
     if psw is None or len(psw) < 8: 
         return HttpResponse(template.render({ 'psw_error': True }, request))
     
-    if card_id is None:
-        return HttpResponse(template.render({ 'errore': True }, request))
-    if not checkHEX(card_id) or len(card_id)!=11 :
-        return HttpResponse(template.render({ 'errore': True }, request))
+    # Check card_id:
+    card_id = "".join(card_id.split()) # Removes all whitespaces
+    card_id = card_id.upper()
+    if card_id is None or not checkHEX(card_id) or len(card_id)!=8 :
+        return HttpResponse(template.render({ 'card_id_error': True }, request))
+    card_id = " ".join(card_id[i:i+2] for i in range(0, len(card_id), 2)) # Reassemble the card_id in "AA BB CC DD" form
+
     try:
         utente = TessereUnimore.objects.get(mail=mail)
         if utente.id_tessera == card_id:
