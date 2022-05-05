@@ -16,7 +16,7 @@
             <p>Registrati qui inserendo mail UniMoRe, l'ID tessera NFC e la password:</p>
         {% endif %}
 
-        {% if email_error %}
+        {% if email_number_error %}
             <p>Errore nel campo mail.</p>
         {% endif %}
         {% if psw_error %}
@@ -34,7 +34,7 @@
         <form method="post"> 
             {% csrf_token %} 
             <label for="user">Mail UniMoRe (solo cifre): </label>
-            <input type="text" name="email" id="email"/>@studenti.unimore.it <br><br>
+            <input type="text" name="email_number" id="email_number"/>@studenti.unimore.it <br><br>
             
             <label for="card_id">ID tessera NFC: </label>
             <input type="text" name="card_id" id="card_id"/> <br><br>

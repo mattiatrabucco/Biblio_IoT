@@ -31,7 +31,7 @@ def register(request):
     template = loader.get_template('register.html')
 
     try:
-        mail = request.POST['email']
+        email_number = request.POST['email_number']
         card_id = request.POST['card_id']
         psw = request.POST['password']
         #print(mail)
@@ -41,9 +41,9 @@ def register(request):
         # GET
         return HttpResponse(template.render({ 'first': True }, request))
 
-    # Check email:
-    if mail is None or len(mail) != 6: # EXAMPLE: 123456@studenti.unimore.it
-        return HttpResponse(template.render({ 'email_error': True }, request))
+    # Check email_number:
+    if email_number is None or len(email_number) != 6: # EXAMPLE: 123456@studenti.unimore.it
+        return HttpResponse(template.render({ 'email_number_error': True }, request))
 
     # Check password:
     if psw is None or len(psw) < 8: 
@@ -61,7 +61,7 @@ def register(request):
         if utente.id_tessera == card_id:
             utente.password=psw
             utente.save()
-            username=mail[0:6]#lo username per il login saranno solo i primi 6 numeri della mail
+            username=mail
             user = User.objects.create_user(username,email=mail,password=psw)
             user.save()
             return HttpResponse(template.render({ 'ok': True }, request))
