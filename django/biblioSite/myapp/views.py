@@ -72,14 +72,16 @@ def register(request):
                 django_user.set_password(psw)
                 django_user.save()
 
-            return HttpResponse(template.render({ 'ok': True }, request))
+                return HttpResponse(template.render({ 'ok': True }, request))
             
+            return HttpResponse(template.render({ 'error': True }, request))
+
         else:
             print("ERRORE: l'utente è nel DB ma con una tessera diversa!")
             return HttpResponse(template.render({ 'card_id_error': True }, request))
 
     except (KeyError, TessereUnimore.DoesNotExist):
-        return HttpResponse(template.render({ 'errore': True }, request))
+        return HttpResponse(template.render({ 'error': True }, request))
 
 @login_required
 def home(request):

@@ -25,6 +25,9 @@
         {% if card_id_error %}
             <p>Errore nel campo ID tessera.</p>
         {% endif %}
+        {% if error %}
+            <p>Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
+        {% endif %}
 
         {% if ok %}
             <p>Registrazione completata!</p>
