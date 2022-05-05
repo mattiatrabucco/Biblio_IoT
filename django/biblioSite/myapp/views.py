@@ -56,21 +56,30 @@ def register(request):
         return HttpResponse(template.render({ 'card_id_error': True }, request))
     card_id = " ".join(card_id[i:i+2] for i in range(0, len(card_id), 2)) # Reassemble the card_id in "AA BB CC DD" form
 
+    email = email_number + "@studenti.unimore.it"
+    
     try:
-        utente = TessereUnimore.objects.get(mail=mail)
-        if utente.id_tessera == card_id:
-            utente.password=psw
-            utente.save()
-            username=mail
-            user = User.objects.create_user(username,email=mail,password=psw)
-            user.save()
+        tessere_user = TessereUnimore.objects.get(mail=email)
+        
+        if tessere_user.id_tessera == card_id:
+            tessere_user.password=psw # HELP: perchè non registrare solo il fatto che un utente sia registrato?
+            tessere_user.save()
+            
+            try:
+                django_user = User.objects.get(username=email_number)
+            except (User.DoesNotExist):
+                django_user = User.objects.create(username=email_number, email=email)
+                django_user.set_password(psw)
+                django_user.save()
+
             return HttpResponse(template.render({ 'ok': True }, request))
+            
+        else:
+            print("ERRORE: l'utente è nel DB ma con una tessera diversa!")
+            return HttpResponse(template.render({ 'card_id_error': True }, request))
 
     except (KeyError, TessereUnimore.DoesNotExist):
         return HttpResponse(template.render({ 'errore': True }, request))
-    
-    return HttpResponse(template.render({ 'errore': True }, request))
-
 
 @login_required
 def home(request):
