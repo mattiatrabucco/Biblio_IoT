@@ -129,13 +129,14 @@ class TessereUnimore(models.Model):
     nome = models.TextField(blank=True, null=True)
     cognome = models.TextField(blank=True, null=True)
     indirizzo = models.TextField(blank=True, null=True)
-    facolta = models.TextField(blank=True, null=True)
+    facolta = models.TextField(blank=True, null=True, verbose_name="facoltà")
     id_tessera = models.TextField(blank=True, primary_key=True)
-    mail = models.TextField(unique=True, blank=True, null=True)
+    mail = models.TextField(unique=True, blank=True, null=True, verbose_name="email di Ateneo")
     password = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'tessere_unimore'
+        verbose_name_plural = "tessere UniMoRe"
 
 class BiblioIngmoCurrent(models.Model):
     id_tessera = models.ForeignKey(TessereUnimore,on_delete=models.CASCADE)
@@ -154,9 +155,10 @@ class LogIngmo(models.Model):
         db_table = 'log_ingmo'
         
 class Biblioteche(models.Model):
-    nome = models.TextField(blank=True, primary_key=True)
-    count = models.IntegerField(blank=True, null=True)
-    capienza = models.IntegerField(blank=True, null=True)
+    nome = models.TextField(blank=True, primary_key=True, verbose_name="nome biblioteca")
+    count = models.IntegerField(blank=True, null=True, verbose_name="conteggio attuale")
+    capienza = models.IntegerField(blank=True, null=True, verbose_name="capienza massima")
 
     class Meta:
         db_table = 'biblioteche'
+        verbose_name_plural = "biblioteche"

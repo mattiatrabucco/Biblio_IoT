@@ -2,5 +2,12 @@ from django.contrib import admin
 
 from .models import TessereUnimore, Biblioteche
 # Register your models here.
-admin.site.register(TessereUnimore)
-admin.site.register(Biblioteche)
+
+class TessereUnimoreAdmin(admin.ModelAdmin):
+    list_display = ('id_tessera', 'nome', 'cognome', 'facolta', 'mail')
+
+class BibliotecheAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'count', 'capienza')
+
+admin.site.register(TessereUnimore, TessereUnimoreAdmin)
+admin.site.register(Biblioteche, BibliotecheAdmin)
