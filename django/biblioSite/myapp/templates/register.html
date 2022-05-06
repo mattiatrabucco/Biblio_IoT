@@ -37,13 +37,13 @@
         <form method="post"> 
             {% csrf_token %} 
             <label for="user">Mail UniMoRe (solo cifre): </label>
-            <input type="text" name="email_number" id="email_number"/>@studenti.unimore.it <br><br>
+            <input type="text" name="email_number" id="email_number" required/>@studenti.unimore.it <br><br>
             
             <label for="card_id">ID tessera NFC: </label>
-            <input type="text" name="card_id" id="card_id"/> <br><br>
+            <input type="text" name="card_id" id="card_id" required/> <br><br>
 
             <label for="password">Password: </label>
-            <input type="password" name="password" id="password"/> <br><br>
+            <input type="password" name="password" id="password" required/> <br><br>
 
             <input type="submit" value="Registrati" /><br><br>
             
