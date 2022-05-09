@@ -13,7 +13,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
-from .models import TessereUnimore
+from .models import Biblioteche, TessereUnimore
 import string
 
 def checkHEX(card_id):
@@ -22,7 +22,16 @@ def checkHEX(card_id):
 #path('', views.index, name='index')
 def index(request):
     template = loader.get_template('index.html')
-    return HttpResponse(template.render({}, request))
+    elenco_biblio = Biblioteche.objects.all()
+    diz_biblio = {} #oggetto da passare all'HTML
+
+    for biblio in elenco_biblio:
+        cap = int((biblio.count / biblio.capienza) * 100)
+        
+        diz_biblio[biblio.nome] = cap
+        print(diz_biblio[biblio.nome])
+
+    return HttpResponse(template.render({ 'biblio' : diz_biblio }, request))
 
 #path('register/', views.register, name='register')
 def register(request):

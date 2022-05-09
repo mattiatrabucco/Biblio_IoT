@@ -1,8 +1,27 @@
 <h1>Biblio IoT</h1>
 <h3>Welcome!</h3>
-<br><br><br><br>
+<br><br>
 <p>
     <a href="{% url 'myapp:register' %}">REGISTRATI</a><br>
     <a href="{% url 'myapp:home' %}">ACCEDI</a><br>
     <a href="{% url 'myapp:admin_home' %}">ACCEDI DA AMMINISTRATORE</a><br>
 </p>
+<br><br>
+{% if biblio %}
+    <p>
+        {% for nome, capienza in biblio.items %}
+            {% if capienza < 25 %}
+                <li> {{ nome | capfirst }} - Not busy ({{ capienza }}%)</li>
+            {% endif %}
+            {% if capienza >= 25 and capienza < 50 %}
+                <li> {{ nome | capfirst }} - Medium ({{ capienza }}%)</li>
+            {% endif %}
+            {% if capienza >= 50 and capienza < 75 %}
+                <li> {{ nome | capfirst }} - Busy ({{ capienza }}%)</li>
+            {% endif %}
+            {% if capienza >= 75 %}
+                <li> {{ nome | capfirst }} - Full ({{ capienza }}%)</li>
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
