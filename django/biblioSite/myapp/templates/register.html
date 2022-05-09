@@ -17,23 +17,23 @@
         {% endif %}
 
         {% if email_number_error %}
-            <p>Errore nel campo mail.</p>
+            <p style="color:red;">Errore nel campo mail.</p>
         {% endif %}
         {% if psw_error %}
-            <p>Errore nel campo password.</p>
+            <p style="color:red;">Errore nel campo password.</p>
         {% endif %}
         {% if card_id_error %}
-            <p>Errore nel campo ID tessera.</p>
+            <p style="color:red;">Errore nel campo ID tessera.</p>
         {% endif %}
         {% if error %}
-            <p>Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
+            <p style="color:red;">Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
         {% endif %}
         {% if already_registered %}
-            <p>Sei già registrato!</p>
+            <p style="color:red;">Sei già registrato!</p>
         {% endif %}
 
         {% if ok %}
-            <p>Registrazione completata!</p>
+            <p style="color:greenyellow;">Registrazione completata!</p>
             <p><a href="{% url 'myapp:home' %}">Vai al login.</a></p>
         {% endif %}
 

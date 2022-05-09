@@ -11,16 +11,16 @@
     <p>
         {% for nome, capienza in biblio.items %}
             {% if capienza < 25 %}
-                <li> {{ nome | capfirst }} - Not busy ({{ capienza }}%)</li>
+                <li> {{ nome | capfirst }} - <font color=greenyellow>Not busy ({{ capienza }}%)</font></li>
             {% endif %}
             {% if capienza >= 25 and capienza < 50 %}
-                <li> {{ nome | capfirst }} - Medium ({{ capienza }}%)</li>
+                <li> {{ nome | capfirst }} - <font color=green>Medium ({{ capienza }}%)</font></li>
             {% endif %}
             {% if capienza >= 50 and capienza < 75 %}
-                <li> {{ nome | capfirst }} - Busy ({{ capienza }}%)</li>
+                <li> {{ nome | capfirst }} - <font color=orange>Busy ({{ capienza }}%)</font></li>
             {% endif %}
             {% if capienza >= 75 %}
-                <li> {{ nome | capfirst }} - Full ({{ capienza }}%)</li>
+                <li> {{ nome | capfirst }} -  <font color=red>Full ({{ capienza }}%)</font></li>
             {% endif %}
         {% endfor %}
     </p>
