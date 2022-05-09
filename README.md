@@ -26,9 +26,13 @@ DB
 - [x] Tabella log
 - [x] Add mail column in Tessere
 
-
 DJANGO
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
+- [ ] Visualizzare "closed" per una biblioteca fuori dagli orari di apertura
+- [ ] Visualizzare capienza biblio
+- [ ] Previsione futura tipo: "Next hour will be more crowded"
+- [ ] Confronto con la stessa settimana nel passato tipo: "Today has about the same crowds as last week"
+- [ ] Mostrare le ore di punta tipo: "Peak hours are 6pm, 7pm, and 8pm"
 - [ ] UX
 - [x] Modificare tabella tessere e togliere password --> pensare tipo a campo booleano is_registered
 - [x] Login/Register user
