@@ -108,9 +108,13 @@ def where_to_go(utente):
     biblio = Biblioteche.objects.get(nome = biblioteche_facolta[utente.facolta])
     cap = int((biblio.count / biblio.capienza) * 100)
     if cap < 50:
-        pass
-
-    return biblio.nome
+        return biblio.nome
+    else:
+        biblio_all = Biblioteche.objects.all()
+        for i in biblio_all:
+            if i.nome != biblio.nome and (i.count / i.capienza) < (biblio.count / biblio.capienza):
+                biblio=i
+        return biblio.nome
 
 @login_required
 def home(request):

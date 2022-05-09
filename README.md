@@ -34,7 +34,7 @@ DJANGO
 - [ ] Confronto con la stessa settimana nel passato tipo: "Today has about the same crowds as last week"
 - [ ] Mostrare le ore di punta tipo: "Peak hours are 6pm, 7pm, and 8pm"
 - [ ] Visualizzare capienza biblio
-- [ ] Completare funzione/algoritmo where_to_go --> definire priorità e considerazioni che deve fare
+- [x] Completare funzione/algoritmo where_to_go --> definire priorità e considerazioni che deve fare
 - [ ] UX
 - [x] Modificare tabella tessere e togliere password --> pensare tipo a campo booleano is_registered
 - [x] Login/Register user
