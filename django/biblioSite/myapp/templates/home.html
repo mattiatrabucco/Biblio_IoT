@@ -1,3 +1,9 @@
 <h1>Biblio IoT</h1>
-<h3>BOTTONE</h3><br><br><br><br>
+<h3>Ciao {{ utente }},</h3><br>
+
+Oggi ti consiglio di andare in {{ where_to_go }}
+
+<br><br>
+
+<a href="{% url 'myapp:index' %}">Vai alla home</a><br>
 <a href="{% url 'myapp:logout_view' %}">Esegui Logout</a>

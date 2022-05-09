@@ -96,11 +96,33 @@ def register(request):
     except (KeyError, TessereUnimore.DoesNotExist):
         return HttpResponse(template.render({ 'error': True }, request))
 
+biblioteche_facolta = { 
+    'IngMO' : "ingmo",
+    'Matematica' : 'bsi',
+    'Fisica' : 'bsi',
+    'Medicina' : 'medica',
+    'Odontoiatria' : 'medica'
+}
+
+def where_to_go(utente):
+    biblio = Biblioteche.objects.get(nome = biblioteche_facolta[utente.facolta])
+    cap = int((biblio.count / biblio.capienza) * 100)
+    if cap < 50:
+        pass
+
+    return biblio.nome
+
 @login_required
 def home(request):
-    #product_list = Product.objects.all().order_by('name') #.get(pk=post_id) .order_by('-pub_date')[:5]
     template = loader.get_template('home.html')
-    context = {}
+    nome_utente = request.user.username + "@studenti.unimore.it"
+    utente = TessereUnimore.objects.get(mail=nome_utente)
+
+    context = {
+        'utente' : request.user.username,
+        'where_to_go' : where_to_go(utente)
+        }
+
     return HttpResponse(template.render(context, request))
 
 @login_required
