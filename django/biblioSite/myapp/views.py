@@ -61,19 +61,23 @@ def register(request):
         tessere_user = TessereUnimore.objects.get(mail=email)
         
         if tessere_user.id_tessera == card_id:
-            tessere_user.password=psw # HELP: perchè non registrare solo il fatto che un utente sia registrato?
-            tessere_user.save()
+            if  tessere_user.is_registered == False: # HELP: perchè non registrare solo il fatto che un utente sia registrato?
+                tessere_user.is_registered = True
+                tessere_user.save()
 
-            # Insert in Django User:
-            try:
-                django_user = User.objects.get(username=email_number)
-            except (User.DoesNotExist):
-                django_user = User.objects.create(username=email_number, email=email)
-                django_user.set_password(psw)
-                django_user.save()
+                # Insert in Django User:
+                try:
+                    django_user = User.objects.get(username=email_number)
+                except (User.DoesNotExist):
+                    django_user = User.objects.create(username=email_number, email=email)
+                    django_user.set_password(psw)
+                    django_user.save()
 
-                return HttpResponse(template.render({ 'ok': True }, request))
-            
+                    return HttpResponse(template.render({ 'ok': True }, request))
+            else:
+                return HttpResponse(template.render({ 'already_registered': True }, request))
+
+                
             return HttpResponse(template.render({ 'error': True }, request))
 
         else:

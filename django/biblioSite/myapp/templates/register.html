@@ -28,6 +28,9 @@
         {% if error %}
             <p>Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
         {% endif %}
+        {% if already_registered %}
+            <p>Sei già registrato!</p>
+        {% endif %}
 
         {% if ok %}
             <p>Registrazione completata!</p>

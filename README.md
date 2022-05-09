@@ -27,7 +27,7 @@ DB
 - [x] Add mail column in Tessere
 
 DJANGO
-- [ ] Modificare tabella tessere e togliere password --> pensare tipo a campo booleano is_registered
+- [x] Modificare tabella tessere e togliere password --> pensare tipo a campo booleano is_registered
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
 - [ ] UX
 - [x] Login/Register user

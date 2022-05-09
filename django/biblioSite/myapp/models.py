@@ -132,7 +132,7 @@ class TessereUnimore(models.Model):
     facolta = models.TextField(blank=True, null=True, verbose_name="facoltà")
     id_tessera = models.TextField(blank=True, primary_key=True)
     mail = models.TextField(unique=True, blank=True, null=True, verbose_name="email di Ateneo")
-    password = models.TextField(blank=True, null=True)
+    is_registered = models.BooleanField(blank=True, verbose_name="registrato su app")
 
     class Meta:
         db_table = 'tessere_unimore'
