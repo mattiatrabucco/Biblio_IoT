@@ -26,6 +26,7 @@ DB
 - [x] Tabella log
 - [x] Add mail column in Tessere
 
+
 DJANGO
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
 - [ ] UX
