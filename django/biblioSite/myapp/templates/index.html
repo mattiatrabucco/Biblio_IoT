@@ -9,18 +9,46 @@
 <br><br>
 {% if biblio %}
     <p>
-        {% for nome, capienza in biblio.items %}
+        {% for nome,capienza in biblio.items %}
             {% if capienza < 25 %}
-                <li> {{ nome | capfirst }} - <font color=greenyellow>Not busy ({{ capienza }}%)</font></li>
+                <li> 
+                    {{ nome | capfirst }} <font color=greenyellow>Not busy ({{ capienza }}%)</font>
+                    {% for nome1,capienza1 in cap.items %}
+                    {% if nome == nome1 %}
+                        Capienza : {{capienza1}}
+                    {% endif %}
+                {% endfor %}
+                </li>
             {% endif %}
             {% if capienza >= 25 and capienza < 50 %}
-                <li> {{ nome | capfirst }} - <font color=green>Medium ({{ capienza }}%)</font></li>
+                <li> 
+                    {{ nome | capfirst }} - <font color=green>Medium ({{ capienza }}%)</font>
+                    {% for nome1,capienza1 in cap.items %}
+                    {% if nome == nome1 %}
+                        Capienza : {{capienza1}}
+                    {% endif %}
+                {% endfor %}
+                </li>
             {% endif %}
             {% if capienza >= 50 and capienza < 75 %}
-                <li> {{ nome | capfirst }} - <font color=orange>Busy ({{ capienza }}%)</font></li>
+                <li> 
+                    {{ nome | capfirst }} - <font color=orange>Busy ({{ capienza }}%)</font>
+                    {% for nome1,capienza1 in cap.items %}
+                    {% if nome == nome1 %}
+                        Capienza : {{capienza1}}
+                    {% endif %}
+                {% endfor %}
+                </li>
             {% endif %}
             {% if capienza >= 75 %}
-                <li> {{ nome | capfirst }} -  <font color=red>Full ({{ capienza }}%)</font></li>
+                <li> 
+                    {{ nome | capfirst }} - <font color=red>Full ({{ capienza }}%)</font> -
+                    {% for nome1,capienza1 in cap.items %}
+                        {% if nome == nome1 %}
+                            Capienza : {{capienza1}}
+                        {% endif %}
+                    {% endfor %}
+                </li>
             {% endif %}
         {% endfor %}
     </p>
