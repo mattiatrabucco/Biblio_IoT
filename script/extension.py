@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
@@ -33,11 +33,14 @@ def extend_biblio(nome_biblio):
     diz = { 
         "name" : "P05",
         "capacity" : 30,
-        "open_until" : str(datetime.now())
+        "open_until" : str(datetime.now() + timedelta(minutes=3))
     }
     update_db("biblioteche", f"extension = ('{json.dumps(diz)}')", f"nome = '{nome_biblio}'", "../tessere.db")
     update_db("biblioteche", "is_extended = 1", f"nome = '{nome_biblio}'", "../tessere.db")
     
+def close_biblio(nome_biblio):
+    update_db("biblioteche", f"extension = ('closed')", f"nome = '{nome_biblio}'", "../tessere.db")
+    update_db("biblioteche", "is_extended = 0", f"nome = '{nome_biblio}'", "../tessere.db")
 
 def main():
     biblioteche = collect_biblioteche()
@@ -49,11 +52,18 @@ def main():
         is_extended = biblioteca[3]
 
         soglia = capienza - count
-        print(nome + str(soglia) + str(is_extended))
+        #print(nome + str(soglia) + str(is_extended))
 
+        if is_extended == True:
+            extension = json.loads(biblioteca[4])
+            if datetime.strptime(extension["open_until"], "%Y-%m-%d %H:%M:%S.%f") < datetime.now():
+                print("Sto chiudendo la biblio " + nome)
+                close_biblio(nome)
+        
         if soglia <= 2 and is_extended == False:
             print("Sto estendendo la biblio " + nome)
             extend_biblio(nome)
+
             
 
 
