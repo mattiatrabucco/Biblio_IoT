@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
 from .models import Biblioteche, TessereUnimore
 import string
+import json
 
 def checkHEX(card_id):
     return all(c in string.hexdigits for c in card_id)
@@ -33,7 +34,9 @@ def index(request):
         diz_biblio_cap[biblio.nome] = biblio.capienza
         diz_biblio_count[biblio.nome] = biblio.count
         if biblio.is_extended==True:
-            diz_biblio_estensione[biblio.nome]=biblio.extension
+            var=json.loads(biblio.extension)
+            str_est="Biblioteca estesa nell'aula " + var["name"] + " con una capacita' di " + str(var["capacity"]) + " fino alle " + var["open_until"][11:16]
+            diz_biblio_estensione[biblio.nome]=str_est
     
     context = {
         'biblio' : diz_biblio,

@@ -20,7 +20,7 @@
                     {% endfor %}
                     {% for nome2,ext in extension.items %}
                         {%if nome == nome2 %}
-                             - Estensione : {{ext}}
+                            <br>- Estensione : {{ext}}
                         {%endif%}
                     {% endfor %}
                 </li>
@@ -35,7 +35,7 @@
                     {% endfor %}
                     {% for nome2,ext in extension.items %}
                         {%if nome == nome2 %}
-                            - Estensione : {{ext}}
+                            <br>- Estensione : {{ext}}
                         {%endif%}
                     {% endfor %}
                 </li>
@@ -50,7 +50,7 @@
                     {% endfor %}
                     {% for nome2,ext in extension.items %}
                         {%if nome == nome2 %}
-                            - Estensione : {{ext}}
+                            <br>- Estensione : {{ext}}
                         {%endif%}
                     {% endfor %}
                 </li>
@@ -65,11 +65,12 @@
                     {% endfor %}
                     {% for nome2,ext in extension.items %}
                         {%if nome == nome2 %}
-                            - Estensione : {{ext}}
+                            <br>- Estensione : {{ext}}
                         {%endif%}
                     {% endfor %}
                 </li>
             {% endif %}
+            <br>
         {% endfor %}
     </p>
 {% endif %}
