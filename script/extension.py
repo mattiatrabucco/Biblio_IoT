@@ -49,7 +49,7 @@ def main():
         is_extended = biblioteca[3]
 
         soglia = capienza - count
-        #print(nome + str(soglia) + str(is_extended))
+        print(nome + str(soglia) + str(is_extended))
 
         if soglia <= 2 and is_extended == False:
             print("Sto estendendo la biblio " + nome)

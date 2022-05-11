@@ -158,8 +158,8 @@ class Biblioteche(models.Model):
     nome = models.TextField(blank=True, primary_key=True, verbose_name="nome biblioteca")
     count = models.IntegerField(blank=True, null=True, verbose_name="conteggio attuale")
     capienza = models.IntegerField(blank=True, null=True, verbose_name="capienza massima")
-    is_extended = models.BooleanField(blank=True,null=True, verbose_name="aula_estesa")
-    extension=models.TextField(blank=True,null=True, verbose_name="dizionario_estensioni")
+    is_extended = models.BooleanField(blank=True,null=True, verbose_name="esteso?")
+    extension = models.TextField(blank=True,null=True, verbose_name="info aula estesa")
 
     class Meta:
         db_table = 'biblioteche'
