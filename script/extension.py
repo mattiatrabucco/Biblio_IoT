@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 import json
+import pandas as pd
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def select_from_db(what, table, db_name):
@@ -44,6 +45,12 @@ def close_biblio(nome_biblio):
 
 def main():
     biblioteche = collect_biblioteche()
+
+    df = pd.read_excel(r'/Users/mat/Documents/Arduino/Biblio_IoT/script/excel/ingmo/lun.xls') #place "r" before the path string to address special character, such as '\'. Don't forget to put the file name at the end of the path + '.xlsx'
+    for index, row in df.iterrows():
+        print(row)
+        print("-----------")
+        
     
     for biblioteca in biblioteche:
         nome = biblioteca[0]

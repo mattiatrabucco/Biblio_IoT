@@ -28,6 +28,7 @@ DB
 
 DJANGO
 - [ ] AULA ESTESA
+- [ ] Integrazione orario aule su excel
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
 - [ ] Visualizzare "closed" per una biblioteca fuori dagli orari di apertura
 - [ ] Previsione futura tipo: "Next hour will be more crowded"
