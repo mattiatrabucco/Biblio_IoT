@@ -14,30 +14,45 @@
                 <li> 
                     {{ nome | capfirst }} <font color=greenyellow>Not busy ({{ capienza }}%)</font>
                     {% for nome1,capienza1 in cap.items %}
-                    {% if nome == nome1 %}
-                        Capienza : {{capienza1}}
-                    {% endif %}
-                {% endfor %}
+                        {% if nome == nome1 %}
+                            Capienza : {{capienza1}} 
+                        {% endif %}
+                    {% endfor %}
+                    {% for nome2,ext in extension.items %}
+                        {%if nome == nome2 %}
+                             - Estensione : {{ext}}
+                        {%endif%}
+                    {% endfor %}
                 </li>
             {% endif %}
             {% if capienza >= 25 and capienza < 50 %}
                 <li> 
                     {{ nome | capfirst }} - <font color=green>Medium ({{ capienza }}%)</font>
                     {% for nome1,capienza1 in cap.items %}
-                    {% if nome == nome1 %}
-                        Capienza : {{capienza1}}
-                    {% endif %}
-                {% endfor %}
+                        {% if nome == nome1 %}
+                            Capienza : {{capienza1}} 
+                        {% endif %}
+                    {% endfor %}
+                    {% for nome2,ext in extension.items %}
+                        {%if nome == nome2 %}
+                            - Estensione : {{ext}}
+                        {%endif%}
+                    {% endfor %}
                 </li>
             {% endif %}
             {% if capienza >= 50 and capienza < 75 %}
                 <li> 
                     {{ nome | capfirst }} - <font color=orange>Busy ({{ capienza }}%)</font>
                     {% for nome1,capienza1 in cap.items %}
-                    {% if nome == nome1 %}
-                        Capienza : {{capienza1}}
-                    {% endif %}
-                {% endfor %}
+                        {% if nome == nome1 %}
+                            Capienza : {{capienza1}} 
+                        {% endif %}
+                    {% endfor %}
+                    {% for nome2,ext in extension.items %}
+                        {%if nome == nome2 %}
+                            - Estensione : {{ext}}
+                        {%endif%}
+                    {% endfor %}
                 </li>
             {% endif %}
             {% if capienza >= 75 %}
@@ -45,8 +60,13 @@
                     {{ nome | capfirst }} - <font color=red>Full ({{ capienza }}%)</font> -
                     {% for nome1,capienza1 in cap.items %}
                         {% if nome == nome1 %}
-                            Capienza : {{capienza1}}
+                            Capienza : {{capienza1}} 
                         {% endif %}
+                    {% endfor %}
+                    {% for nome2,ext in extension.items %}
+                        {%if nome == nome2 %}
+                            - Estensione : {{ext}}
+                        {%endif%}
                     {% endfor %}
                 </li>
             {% endif %}

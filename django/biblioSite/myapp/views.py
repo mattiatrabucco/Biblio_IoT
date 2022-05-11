@@ -26,17 +26,20 @@ def index(request):
     diz_biblio = {} #oggetto da passare all'HTML
     diz_biblio_cap={}
     diz_biblio_count={}
+    diz_biblio_estensione={}
     for biblio in elenco_biblio:
         cap = int((biblio.count / biblio.capienza) * 100)
         diz_biblio[biblio.nome] = cap
         diz_biblio_cap[biblio.nome] = biblio.capienza
         diz_biblio_count[biblio.nome] = biblio.count
-        #diz_biblio[biblio.nome] = [cap,biblio.count,biblio.capienza]
-        #print(diz_biblio[biblio.nome])
+        if biblio.is_extended==True:
+            diz_biblio_estensione[biblio.nome]=biblio.extension
+    
     context = {
         'biblio' : diz_biblio,
         'cap' : diz_biblio_cap, 
-        'count':diz_biblio_count
+        'count':diz_biblio_count,
+        'extension':diz_biblio_estensione
     }
     return HttpResponse(template.render(context, request))
 
