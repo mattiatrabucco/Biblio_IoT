@@ -36,14 +36,17 @@ def select_aula(nome_biblio,apertura_biblio="09:00",chiusura_biblio="18:00"):
             break
 
     diz={}
-    for i in range(2, row_count): 
+    for i in range(2, row_count+1): 
         diz[i]=0
-        
+        #print("numeroAULA" + str(i) +"orario - index_chiusura" + str(orario) + " "+ str(index_chiusura))
         for j in range(orario, index_chiusura): 
             val = sheet.cell(row=i, column=j).value 
+            #print(val)
             if val is None:
                 diz[i]=diz[i]+1
+                #print("incremento diz =" + str(diz[i]))
             else:
+                #print("BREAK")
                 break #aula occupata dall'orario necessario per l'apertura
     print(diz.items())
     ris=0 #number of free time slot
@@ -121,12 +124,15 @@ def main():
         capienza = biblioteca[2]
         is_extended = biblioteca[3]
         opening_hours=json.loads(biblioteca[5])
-        print(opening_hours)
+        #print(opening_hours)
         soglia = capienza - count
         #print(nome + str(soglia) + str(is_extended))
 
         if is_extended == True:
             extension = json.loads(biblioteca[4])
+            #print(nome)
+            #print(datetime.strptime(extension["open_until"], "%H:%M"))
+            #print(datetime.strptime(str(datetime.now())[11:16], '%H:%M'))
             if datetime.strptime(extension["open_until"], "%H:%M") < datetime.strptime(str(datetime.now())[11:16], '%H:%M'):
                 print("Sto chiudendo la biblio " + nome)
                 close_biblio(nome)
