@@ -8,6 +8,7 @@ def found_index(sheet,column_count,apertura_biblio):
     for i in range(3,column_count+1):
         if sheet.cell(row=1, column=i).value==apertura_biblio:
             return i
+    return column_count
 
 
 def select_aula(nome_biblio,apertura_biblio="09:00",chiusura_biblio="18:00"):
@@ -35,7 +36,7 @@ def select_aula(nome_biblio,apertura_biblio="09:00",chiusura_biblio="18:00"):
             break
 
     diz={}
-    for i in range(2, row_count + 1): 
+    for i in range(2, row_count): 
         diz[i]=0
         
         for j in range(orario, index_chiusura): 
@@ -94,7 +95,7 @@ def update_db(table, value, condition, db_name):
 
 def extend_biblio(nome_biblio, fascia_oraria):
 
-    aula, capienza, apertura, chiusura=select_aula(nome_biblio, fascia_oraria[0:4], fascia_oraria[6:9])
+    aula, capienza, apertura, chiusura=select_aula(nome_biblio, fascia_oraria[0:5], fascia_oraria[6:])
     diz = { 
         "name" : aula,
         "capacity" : capienza,
@@ -119,18 +120,20 @@ def main():
         count = biblioteca[1]
         capienza = biblioteca[2]
         is_extended = biblioteca[3]
-        opening_hours=biblioteca[5]
+        opening_hours=json.loads(biblioteca[5])
         print(opening_hours)
         soglia = capienza - count
         #print(nome + str(soglia) + str(is_extended))
 
         if is_extended == True:
             extension = json.loads(biblioteca[4])
-            if datetime.strptime(extension["open_until"], "%Y-%m-%d %H:%M:%S.%f") < datetime.now():
+            if datetime.strptime(extension["open_until"], "%H:%M") < datetime.strptime(str(datetime.now())[11:16], '%H:%M'):
                 print("Sto chiudendo la biblio " + nome)
                 close_biblio(nome)
         
         if soglia <= 2 and is_extended == False:
+            if opening_hours[calendar.day_name[datetime.now().weekday()]] =="N/A":
+                continue
             print("Sto estendendo la biblio " + nome)
             extend_biblio(nome, opening_hours[calendar.day_name[datetime.now().weekday()]])
 
