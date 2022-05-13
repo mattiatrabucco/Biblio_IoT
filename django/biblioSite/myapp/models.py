@@ -160,6 +160,7 @@ class Biblioteche(models.Model):
     capienza = models.IntegerField(blank=True, null=True, verbose_name="capienza massima")
     is_extended = models.BooleanField(blank=True,null=True, verbose_name="esteso?")
     extension = models.TextField(blank=True,null=True, verbose_name="info aula estesa")
+    opening_hours = models.TextField(blank=True,null=True, verbose_name="orari di apertura")
 
     class Meta:
         db_table = 'biblioteche'

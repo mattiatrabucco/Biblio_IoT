@@ -1,14 +1,54 @@
 <h1>Biblio IoT</h1>
-<h3>Welcome!</h3>
-<br><br>
-<p>
-    <a href="{% url 'myapp:register' %}">REGISTRATI</a><br>
-    <a href="{% url 'myapp:home' %}">ACCEDI</a><br>
-    <a href="{% url 'myapp:admin_home' %}">ACCEDI DA AMMINISTRATORE</a><br>
-</p>
-<br><br>
-{% if biblio %}
+
+{% if biblioteche %}
     <p>
+        {% for biblio_name, biblio_data in biblioteche.items %}
+            <h3>{{ biblio_name | capfirst}}:</h3>
+
+            {% if biblio_data.closed %}
+            Biblioteca chiusa
+            <br>
+            Orario di oggi: {{ biblio_data.opening_hours }}
+            <br>
+            {% else %}
+            
+            
+            
+            Stato occupazione attuale: 
+            {% if biblio_data.percentage < 25 %}
+                <font color=greenyellow>Not busy ({{ biblio_data.percentage }}%)</font>
+            {% endif %}
+            {% if biblio_data.percentage >= 25 and biblio_data.percentage < 50 %}
+                <font color=green>Medium ({{ biblio_data.percentage }}%)</font>
+            {% endif %}
+            {% if biblio_data.percentage >= 50 and biblio_data.percentage < 75 %}
+                <font color=orange>Busy ({{ biblio_data.percentage }}%)</font>
+            {% endif %}
+            {% if biblio_data.percentage >= 75 %}
+                <font color=red>Full ({{ biblio_data.percentage }}%)</font>
+            {% endif %}
+            <br>
+            Posti totali: {{ biblio_data.capacity }}
+            <br>
+            Orario di oggi: {{ biblio_data.opening_hours }}
+            <br>
+            {% if biblio_data.extension != "N/A" %}
+            --> Estensione nell'aula {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) fino alle {{ biblio_data.extension.open_until }}
+            {% endif %}
+            <br>
+            <br>
+
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+<p>
+    Sei già registrato? <a href="{% url 'myapp:home' %}">Accedi qui</a> | Altrimenti,
+    <a href="{% url 'myapp:register' %}">registrati ora</a>  
+    <!--<a href="{% url 'myapp:admin_home' %}">ACCEDI DA AMMINISTRATORE</a><br>-->
+</p>
+ <!--   <p>
         {% for nome,capienza in biblio.items %}
             {% if capienza < 25 %}
                 <li> 
@@ -73,4 +113,4 @@
             <br>
         {% endfor %}
     </p>
-{% endif %}
+--> 

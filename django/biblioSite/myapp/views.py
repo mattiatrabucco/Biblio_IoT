@@ -20,17 +20,95 @@ import json
 def checkHEX(card_id):
     return all(c in string.hexdigits for c in card_id)
 
+def getGiorno(weekday):
+    if weekday == 1:
+        return "lun"
+    if weekday == 2:
+        return "mar"
+    if weekday == 3:
+        return "mer"
+    if weekday == 4:
+        return "gio"
+    if weekday == 5:
+        return "ven"
+    if weekday == 6:
+        return "sab"
+    if weekday == 7:
+        return "dom"
+    return "N/A"
+
+def getGiornoEsteso(weekday):
+    if weekday == 1:
+        return "lunedì"
+    if weekday == 2:
+        return "martedì"
+    if weekday == 3:
+        return "mercoledì"
+    if weekday == 4:
+        return "giovedì"
+    if weekday == 5:
+        return "venerdì"
+    if weekday == 6:
+        return "sabato"
+    if weekday == 7:
+        return "domenica"
+    return "N/A"
+
 #path('', views.index, name='index')
 def index(request):
     template = loader.get_template('index.html')
-    elenco_biblio = Biblioteche.objects.all()
-    diz_biblio = {} #oggetto da passare all'HTML
+    biblioteche = Biblioteche.objects.all()
+    all_bib = {} #oggetto da passare all'HTML
+    diz_biblio = {} 
     diz_biblio_cap={}
     diz_biblio_count={}
     diz_biblio_estensione={}
-    for biblio in elenco_biblio:
-        cap = int((biblio.count / biblio.capienza) * 100)
-        diz_biblio[biblio.nome] = cap
+    for biblio in biblioteche:
+        bib = {}
+        if biblio.opening_hours is not None:
+            opening_hours = json.loads(biblio.opening_hours)
+            open_from = opening_hours[getGiorno(datetime.now().isoweekday())][0:5]
+            try:
+                open_from = datetime.strptime(open_from, "%H:%M")
+                open_from = open_from.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
+            except:
+                bib["closed"] = True
+                bib["opening_hours"] = getGiornoEsteso(datetime.now().isoweekday()) + " chiuso" if opening_hours[getGiorno(datetime.now().isoweekday())] == "N/A" else "N/A"
+                all_bib[biblio.nome] = bib
+                continue
+
+            open_until = opening_hours[getGiorno(datetime.now().isoweekday())][6:]
+            open_until = datetime.strptime(open_until, "%H:%M")
+            open_until = open_until.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
+            
+            if open_from < datetime.now() < open_until:
+                bib["opening_hours"] = opening_hours[getGiorno(datetime.now().isoweekday())]
+                bib["closed"] = False
+            else:
+                bib["closed"] = True
+                bib["opening_hours"] = opening_hours[getGiorno(datetime.now().isoweekday())]
+                all_bib[biblio.nome] = bib
+                continue
+
+        else:
+            #bib["closed"] = True
+            #all_bib[biblio.nome] = bib
+            continue
+        
+        bib["percentage"] = int((biblio.count / biblio.capienza) * 100)
+        bib["count"] = biblio.count
+        bib["capacity"] = biblio.capienza
+
+        
+        if biblio.is_extended:
+            bib["extension"] = json.loads(biblio.extension)
+            bib["extension"]["open_until"] = bib["extension"]["open_until"][11:16]
+        else:
+            bib["extension"] = "N/A"
+
+        all_bib[biblio.nome] = bib
+
+        diz_biblio[biblio.nome] = "N/A"
         diz_biblio_cap[biblio.nome] = biblio.capienza
         diz_biblio_count[biblio.nome] = biblio.count
         if biblio.is_extended==True:
@@ -42,7 +120,8 @@ def index(request):
         'biblio' : diz_biblio,
         'cap' : diz_biblio_cap, 
         'count':diz_biblio_count,
-        'extension':diz_biblio_estensione
+        'extension':diz_biblio_estensione,
+        'biblioteche' : all_bib
     }
     return HttpResponse(template.render(context, request))
 
