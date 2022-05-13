@@ -1,5 +1,6 @@
 #from asyncio.windows_events import NULL
 from datetime import datetime
+import calendar
 from django.http import HttpResponse
 from django.template import loader
 
@@ -19,23 +20,6 @@ import json
 
 def checkHEX(card_id):
     return all(c in string.hexdigits for c in card_id)
-
-def getGiorno(weekday):
-    if weekday == 1:
-        return "lun"
-    if weekday == 2:
-        return "mar"
-    if weekday == 3:
-        return "mer"
-    if weekday == 4:
-        return "gio"
-    if weekday == 5:
-        return "ven"
-    if weekday == 6:
-        return "sab"
-    if weekday == 7:
-        return "dom"
-    return "N/A"
 
 def getGiornoEsteso(weekday):
     if weekday == 1:
@@ -64,26 +48,26 @@ def index(request):
         bib = {}
         if biblio.opening_hours is not None:
             opening_hours = json.loads(biblio.opening_hours)
-            open_from = opening_hours[getGiorno(datetime.now().isoweekday())][0:5]
+            open_from = opening_hours[calendar.day_name[datetime.now().weekday()]][0:5]
             try:
                 open_from = datetime.strptime(open_from, "%H:%M")
                 open_from = open_from.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
             except:
                 bib["closed"] = True
-                bib["opening_hours"] = getGiornoEsteso(datetime.now().isoweekday()) + " chiuso" if opening_hours[getGiorno(datetime.now().isoweekday())] == "N/A" else "N/A"
+                bib["opening_hours"] = getGiornoEsteso(datetime.now().isoweekday()) + " chiuso" if opening_hours[calendar.day_name[datetime.now().weekday()]] == "N/A" else "N/A"
                 all_bib[biblio.nome] = bib
                 continue
 
-            open_until = opening_hours[getGiorno(datetime.now().isoweekday())][6:]
+            open_until = opening_hours[calendar.day_name[datetime.now().weekday()]][6:]
             open_until = datetime.strptime(open_until, "%H:%M")
             open_until = open_until.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
             
             if open_from < datetime.now() < open_until:
-                bib["opening_hours"] = opening_hours[getGiorno(datetime.now().isoweekday())]
+                bib["opening_hours"] = opening_hours[calendar.day_name[datetime.now().weekday()]]
                 bib["closed"] = False
             else:
                 bib["closed"] = True
-                bib["opening_hours"] = opening_hours[getGiorno(datetime.now().isoweekday())]
+                bib["opening_hours"] = opening_hours[calendar.day_name[datetime.now().weekday()]]
                 all_bib[biblio.nome] = bib
                 continue
 
