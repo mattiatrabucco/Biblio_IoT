@@ -1,7 +1,70 @@
 import sqlite3
 from datetime import datetime, timedelta
 import json
-import pandas as pd
+from openpyxl import load_workbook 
+import calendar
+
+def found_index(sheet,column_count,apertura_biblio):
+    for i in range(3,column_count+1):
+        if sheet.cell(row=1, column=i).value==apertura_biblio:
+            return i
+
+
+def select_aula(nome_biblio,apertura_biblio="09:00",chiusura_biblio="18:00"):
+    giorno=calendar.day_name[datetime.now().weekday()]
+    #nome_biblio='bsi'
+    try:
+        wb = load_workbook('excel/'+ nome_biblio +'/settimana_'+ nome_biblio +'.xlsx') 
+        sheet = wb[giorno] 
+    except:
+        print("errore apertura file, o il file non esite o non esiste il giorno")
+        return "N/A"
+
+    row_count = sheet.max_row 
+    column_count = sheet.max_column 
+
+    data = datetime.strptime(str(datetime.now())[11:16], '%H:%M')
+    #data=datetime.strptime("14:12", '%H:%M') #for testing
+
+    index_apertura=found_index(sheet,column_count,apertura_biblio)
+    index_chiusura=found_index(sheet,column_count,chiusura_biblio)
+    for i in range(index_apertura,index_chiusura):
+        val = datetime.strptime(sheet.cell(row=1, column=i).value, '%H:%M')
+        if val > data:
+            orario=i-1
+            break
+
+    diz={}
+    for i in range(2, row_count + 1): 
+        diz[i]=0
+        
+        for j in range(orario, index_chiusura): 
+            val = sheet.cell(row=i, column=j).value 
+            if val is None:
+                diz[i]=diz[i]+1
+            else:
+                break #aula occupata dall'orario necessario per l'apertura
+    print(diz.items())
+    ris=0 #number of free time slot
+    best_row=0
+    best_cap=0
+    for key,value in diz.items():
+        capacity=sheet.cell(row=key, column=2).value
+        if (value==ris and capacity>best_cap and value!=0) or value>ris :
+            ris=value
+            best_row=key
+            best_cap=capacity
+
+    print(str(ris)+" "+ str(best_cap)+ " "+ str(best_row))
+    if ris<4: #mettere ris<4 cosi che le aule le si pare per almeno un'ora
+        print("non ci sono aule disponibili per estendere la biblioteca")
+        return "N/A"
+    else:
+        apertura=sheet.cell(row=1, column=orario).value
+        chiusura=sheet.cell(row=1, column=orario+ris).value
+        nome_aula=sheet.cell(row=best_row, column=1).value
+        print("apro aula " + nome_aula + " con capienza : " + str(best_cap) + " dalle " + apertura + " alle " + chiusura )
+        return nome_aula,best_cap,apertura,chiusura
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def select_from_db(what, table, db_name):
@@ -29,12 +92,14 @@ def update_db(table, value, condition, db_name):
     con.commit()
     con.close()
 
-def extend_biblio(nome_biblio):
+def extend_biblio(nome_biblio, fascia_oraria):
 
+    aula, capienza, apertura, chiusura=select_aula(nome_biblio, fascia_oraria[0:4], fascia_oraria[6:9])
     diz = { 
-        "name" : "P05",
-        "capacity" : 30,
-        "open_until" : str(datetime.now() + timedelta(minutes=3))
+        "name" : aula,
+        "capacity" : capienza,
+        "open_from" : apertura,
+        "open_until" : chiusura
     }
     update_db("biblioteche", f"extension = ('{json.dumps(diz)}')", f"nome = '{nome_biblio}'", "../tessere.db")
     update_db("biblioteche", "is_extended = 1", f"nome = '{nome_biblio}'", "../tessere.db")
@@ -46,10 +111,7 @@ def close_biblio(nome_biblio):
 def main():
     biblioteche = collect_biblioteche()
 
-    df = pd.read_excel(r'/Users/mat/Documents/Arduino/Biblio_IoT/script/excel/ingmo/lun.xls') #place "r" before the path string to address special character, such as '\'. Don't forget to put the file name at the end of the path + '.xlsx'
-    for index, row in df.iterrows():
-        print(row)
-        print("-----------")
+    
         
     
     for biblioteca in biblioteche:
@@ -57,7 +119,8 @@ def main():
         count = biblioteca[1]
         capienza = biblioteca[2]
         is_extended = biblioteca[3]
-
+        opening_hours=biblioteca[5]
+        print(opening_hours)
         soglia = capienza - count
         #print(nome + str(soglia) + str(is_extended))
 
@@ -69,7 +132,7 @@ def main():
         
         if soglia <= 2 and is_extended == False:
             print("Sto estendendo la biblio " + nome)
-            extend_biblio(nome)
+            extend_biblio(nome, opening_hours[calendar.day_name[datetime.now().weekday()]])
 
             
 
