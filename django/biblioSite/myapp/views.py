@@ -59,10 +59,7 @@ def index(request):
     template = loader.get_template('index.html')
     biblioteche = Biblioteche.objects.all()
     all_bib = {} #oggetto da passare all'HTML
-    diz_biblio = {} 
-    diz_biblio_cap={}
-    diz_biblio_count={}
-    diz_biblio_estensione={}
+   
     for biblio in biblioteche:
         bib = {}
         if biblio.opening_hours is not None:
@@ -91,14 +88,11 @@ def index(request):
                 continue
 
         else:
-            #bib["closed"] = True
-            #all_bib[biblio.nome] = bib
             continue
         
         bib["percentage"] = int((biblio.count / biblio.capienza) * 100)
         bib["count"] = biblio.count
         bib["capacity"] = biblio.capienza
-
         
         if biblio.is_extended:
             bib["extension"] = json.loads(biblio.extension)
@@ -107,23 +101,8 @@ def index(request):
             bib["extension"] = "N/A"
 
         all_bib[biblio.nome] = bib
-
-        diz_biblio[biblio.nome] = "N/A"
-        diz_biblio_cap[biblio.nome] = biblio.capienza
-        diz_biblio_count[biblio.nome] = biblio.count
-        if biblio.is_extended==True:
-            var=json.loads(biblio.extension)
-            str_est="Biblioteca estesa nell'aula " + var["name"] + " con una capacita' di " + str(var["capacity"]) + " fino alle " + var["open_until"][11:16]
-            diz_biblio_estensione[biblio.nome]=str_est
     
-    context = {
-        'biblio' : diz_biblio,
-        'cap' : diz_biblio_cap, 
-        'count':diz_biblio_count,
-        'extension':diz_biblio_estensione,
-        'biblioteche' : all_bib
-    }
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render({ 'biblioteche' : all_bib }, request))
 
 #path('register/', views.register, name='register')
 def register(request):

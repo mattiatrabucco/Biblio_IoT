@@ -3,46 +3,47 @@
 {% if biblioteche %}
     <p>
         {% for biblio_name, biblio_data in biblioteche.items %}
-            <h3>{{ biblio_name | capfirst}}:</h3>
+            <h3>{{ biblio_name | capfirst}}: 
+                {% if biblio_data.closed %}
+                <font color="grey">chiusa</font>
+                {% else %}
+                    {% if biblio_data.percentage < 25 %}
+                        <font color="#00cc99">quasi vuota ({{ biblio_data.percentage }}%)</font>
+                    {% endif %}
+                    {% if biblio_data.percentage >= 25 and biblio_data.percentage < 50 %}
+                        <font color="#9999ff">poco affollata ({{ biblio_data.percentage }}%)</font>
+                    {% endif %}
+                    {% if biblio_data.percentage >= 50 and biblio_data.percentage < 75 %}
+                        <font color="#ff5050">molto affollata ({{ biblio_data.percentage }}%)</font>
+                    {% endif %}
+                    {% if biblio_data.percentage >= 75 %}
+                        <font color="#e60000">piena ({{ biblio_data.percentage }}%)</font>
+                    {% endif %}
+                {% endif %}
+            </h3>
 
             {% if biblio_data.closed %}
-            Biblioteca chiusa
-            <br>
-            Orario di oggi: {{ biblio_data.opening_hours }}
-            <br>
+                Orario di oggi: {{ biblio_data.opening_hours }}
+                <br>
+                <br>
             {% else %}
-            
-            
-            
-            Stato occupazione attuale: 
-            {% if biblio_data.percentage < 25 %}
-                <font color=greenyellow>Not busy ({{ biblio_data.percentage }}%)</font>
+                {% if biblio_data.extension != "N/A" %}
+                   <b> --> estensa nell'aula {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) fino alle {{ biblio_data.extension.open_until }}</b> 
+                   <br>
+                   <br>
+                {% endif %}
+                Posti totali: {{ biblio_data.capacity }}
+                <br>
+                Orario di oggi: {{ biblio_data.opening_hours }}
+                <br>
+                
             {% endif %}
-            {% if biblio_data.percentage >= 25 and biblio_data.percentage < 50 %}
-                <font color=green>Medium ({{ biblio_data.percentage }}%)</font>
-            {% endif %}
-            {% if biblio_data.percentage >= 50 and biblio_data.percentage < 75 %}
-                <font color=orange>Busy ({{ biblio_data.percentage }}%)</font>
-            {% endif %}
-            {% if biblio_data.percentage >= 75 %}
-                <font color=red>Full ({{ biblio_data.percentage }}%)</font>
-            {% endif %}
-            <br>
-            Posti totali: {{ biblio_data.capacity }}
-            <br>
-            Orario di oggi: {{ biblio_data.opening_hours }}
-            <br>
-            {% if biblio_data.extension != "N/A" %}
-            --> Estensione nell'aula {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) fino alle {{ biblio_data.extension.open_until }}
-            {% endif %}
-            <br>
-            <br>
-
-            {% endif %}
+            ____________________________________________________________________________
         {% endfor %}
     </p>
 {% endif %}
 
+<br>
 <p>
     Sei già registrato? <a href="{% url 'myapp:home' %}">Accedi qui</a> | Altrimenti,
     <a href="{% url 'myapp:register' %}">registrati ora</a>  
