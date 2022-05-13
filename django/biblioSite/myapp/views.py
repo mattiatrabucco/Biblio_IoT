@@ -80,7 +80,7 @@ def index(request):
         
         if biblio.is_extended:
             bib["extension"] = json.loads(biblio.extension)
-            bib["extension"]["open_until"] = bib["extension"]["open_until"][11:16]
+            #bib["extension"]["open_until"] = bib["extension"]["open_until"][11:16]
         else:
             bib["extension"] = "N/A"
 

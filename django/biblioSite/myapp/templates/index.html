@@ -28,7 +28,7 @@
                 <br>
             {% else %}
                 {% if biblio_data.extension != "N/A" %}
-                   <b> --> estensa nell'aula {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) fino alle {{ biblio_data.extension.open_until }}</b> 
+                   <b> --> estesa in {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) dalle {{ biblio_data.extension.open_from }} alle {{ biblio_data.extension.open_until }}</b> 
                    <br>
                    <br>
                 {% endif %}
