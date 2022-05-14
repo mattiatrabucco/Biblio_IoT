@@ -46,7 +46,7 @@ def select_aula(nome_biblio, apertura_biblio="09:00", chiusura_biblio="18:00"):
     # print("Index adesso: " + str(index_adesso))
     
     diz = {}
-    for i in range(2, row_count): 
+    for i in range(2, row_count + 1): 
         diz[i] = 0
         
         for j in range(index_adesso, index_chiusura): 
@@ -54,6 +54,7 @@ def select_aula(nome_biblio, apertura_biblio="09:00", chiusura_biblio="18:00"):
             if val is None:
                 diz[i] = diz[i] + 1
             else:
+                #print("BREAK")
                 break #aula occupata dall'orario necessario per l'apertura
     
     #print(diz.items())
@@ -142,6 +143,9 @@ def main():
 
         if is_extended == True:
             extension = json.loads(biblioteca[4])
+            #print(nome)
+            #print(datetime.strptime(extension["open_until"], "%H:%M"))
+            #print(datetime.strptime(str(datetime.now())[11:16], '%H:%M'))
             if datetime.strptime(extension["open_until"], "%H:%M") < datetime.strptime(str(datetime.now())[11:16], '%H:%M'):
                 print("Sto chiudendo l'estensione di biblio " + nome)
                 close_biblio(nome)
