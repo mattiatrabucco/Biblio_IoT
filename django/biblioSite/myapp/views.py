@@ -14,7 +14,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
-from .models import Biblioteche, TessereUnimore
+from .models import Biblioteche, RewardsLog, TessereUnimore
 import string
 import json
 
@@ -159,16 +159,29 @@ biblioteche_facolta = {
     'Odontoiatria' : 'medica'
 }
 
+def add_reward_log(utente,biblio_suggestion):
+    try :
+        reward=RewardsLog.objects.get(id_user=utente.mail[0:6],date=str(datetime.now())[0:10])
+        reward.suggestion=biblio_suggestion
+        print("aggiornato")
+        reward.save()
+    except (RewardsLog.DoesNotExist):
+        reward=RewardsLog.objects.create(id_user=utente.mail[0:6],date=str(datetime.now())[0:10],suggestion=biblio_suggestion)
+        print("creato")
+        reward.save()
+
 def where_to_go(utente):
     biblio = Biblioteche.objects.get(nome = biblioteche_facolta[utente.facolta])
     cap = int((biblio.count / biblio.capienza) * 100)
     if cap < 50:
+        add_reward_log(utente,biblio.nome)
         return biblio.nome
     else:
         biblio_all = Biblioteche.objects.all()
         for i in biblio_all:
             if i.nome != biblio.nome and (i.count / i.capienza) < (biblio.count / biblio.capienza):
                 biblio=i
+        add_reward_log(utente,biblio.nome)
         return biblio.nome
 
 @login_required
@@ -181,7 +194,7 @@ def home(request):
         'utente' : request.user.username,
         'where_to_go' : where_to_go(utente)
         }
-
+    
     return HttpResponse(template.render(context, request))
 
 @login_required
