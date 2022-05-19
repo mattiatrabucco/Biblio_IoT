@@ -30,6 +30,11 @@ DJANGO
 - [x] AULA ESTESA
 - [x] Integrazione orario aule su excel
 - [ ] Reward da log di ingresso e se ha pigiato bottone
+    per implementarlo si potrebbe creare una nuova tabella tipo ELENCO SCELTE dove all'interno ce
+    id utente, data, scelta conisgliata
+    poi ogni qual volta che avviene un log sulla tabbela log in ingresso 
+    confrontiamo se era stata consigliata
+    poi biosgna toglierla dalla tabella consigliate se no inviamo reward di continuo
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
 - [x] Visualizzare "closed" per una biblioteca fuori dagli orari di apertura
 - [ ] Previsione futura tipo: "Next hour will be more crowded"
