@@ -1,117 +1,111 @@
-<h1>Biblio IoT</h1>
+{% extends "base.html" %}
+{% load static %}
 
-{% if biblioteche %}
-    <p>
-        {% for biblio_name, biblio_data in biblioteche.items %}
-            <h3>{{ biblio_name | capfirst}}: 
-                {% if biblio_data.closed %}
-                <font color="grey">chiusa</font>
-                {% else %}
-                    {% if biblio_data.percentage < 25 %}
-                        <font color="#00cc99">quasi vuota ({{ biblio_data.percentage }}%)</font>
-                    {% endif %}
-                    {% if biblio_data.percentage >= 25 and biblio_data.percentage < 50 %}
-                        <font color="#9999ff">poco affollata ({{ biblio_data.percentage }}%)</font>
-                    {% endif %}
-                    {% if biblio_data.percentage >= 50 and biblio_data.percentage < 75 %}
-                        <font color="#ff5050">molto affollata ({{ biblio_data.percentage }}%)</font>
-                    {% endif %}
-                    {% if biblio_data.percentage >= 75 %}
-                        <font color="#e60000">piena ({{ biblio_data.percentage }}%)</font>
-                    {% endif %}
-                {% endif %}
-            </h3>
+{% block head %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/minze@1.0.3" ></script>
+<script src="{% static 'js/main.js' %}"></script>
+<link rel="shortcut icon" href="">
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
 
-            {% if biblio_data.closed %}
-                Orario di oggi: {{ biblio_data.opening_hours }}
-                <br>
-                <br>
-            {% else %}
-                {% if biblio_data.extension != "N/A" %}
-                   <b> --> estesa in {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) dalle {{ biblio_data.extension.open_from }} alle {{ biblio_data.extension.open_until }}</b> 
-                   <br>
-                   <br>
-                {% endif %}
-                Posti totali: {{ biblio_data.capacity }}
-                <br>
-                Orario di oggi: {{ biblio_data.opening_hours }}
-                <br>
+
+{% block body %}
+<bib-app>
+    <bib-sidebar></bib-sidebar>
+
+    <bib-main>
+      <bib-header>
+        <div slot="headline">Biblio IoT</div>
+        <div slot="sub-headline">Dashboard</div>
+
+        <nav slot="nav">
+          <a href="https://unimore.it" target="_blank">Unimore</a>
+          <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+        </nav>
+      </bib-header>
+
+      <bib-content>
+        {% if biblioteche %}
+        <bib-wrap >
+            {% for biblio_name, biblio_data in biblioteche.items %}
+                <bib-wrap >
+                    {% if biblio_data.closed %}
+                        <info-card
+                            top-line="--"
+                            headline="CHIUSA"
+                            value="{{ biblio_name | upper}}"
+                            background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
+                        ></info-card>
+                    {% else %}
+                        {% if biblio_data.percentage < 25 %}
+                            <info-card
+                                top-line="{{ biblio_data.percentage }}%"
+                                headline="QUASI VUOTA"
+                                value="{{ biblio_name | upper}}"
+                                background="linear-gradient(220.64deg, #bef4de 0%, #59e3ac 100%)"
+                            ></info-card>
+                        {% endif %}
+                        {% if biblio_data.percentage >= 25 and biblio_data.percentage < 50 %}
+                            <info-card
+                                top-line="{{ biblio_data.percentage }}%"
+                                headline="POCO AFFOLLATA"
+                                value="{{ biblio_name | upper}}"
+                                background="linear-gradient(220.64deg, #e6e6ff 0%, #9999ff 100%)"
+                            ></info-card>
+                        {% endif %}
+                        {% if biblio_data.percentage >= 50 and biblio_data.percentage < 75 %}
+                            <info-card
+                                top-line="{{ biblio_data.percentage }}%"
+                                headline="MOLTO AFFOLLATA"
+                                value="{{ biblio_name | upper}}"
+                                background="linear-gradient(220.64deg, #ffe9e5 0%, #ffb9aa 100%)"
+                            ></info-card>
+                        {% endif %}
+                        {% if biblio_data.percentage >= 75 %}
+                            <info-card
+                                top-line="{{ biblio_data.percentage }}%"
+                                headline="PIENA"
+                                value="{{ biblio_name | upper}}"
+                                background="linear-gradient(220.64deg, #ffcace 0%, #ff5462 100%)"
+                            ></info-card>
+                        {% endif %}
+                    {% endif %}
                 
-            {% endif %}
-            ____________________________________________________________________________
-        {% endfor %}
-    </p>
-{% endif %}
+    
+                {% if biblio_data.closed %}
+                    <extra-card
+                        first-line="Orario di oggi: {{ biblio_data.opening_hours }}"
+                        background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
+                    ></extra-card>
+                {% else %}
+                    {% if biblio_data.extension != "N/A" %}
+                       <extra-card
+                            first-line="Estesa in {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) dalle {{ biblio_data.extension.open_from }} alle {{ biblio_data.extension.open_until }}"
+                            background="linear-gradient(220.64deg, #bef4de 0%, #59e3ac 100%)"
+                        ></extra-card>
+                    {% endif %}
+                    <extra-card
+                        first-line="Posti totali: {{ biblio_data.capacity }}"
+                        second-line="Orario di oggi: {{ biblio_data.opening_hours }}"
+                        background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
+                    ></extra-card>
+                {% endif %}
+                </bib-wrap>
+            {% endfor %}
+        </bib-wrap>
+        {% endif %}
+      </bib-content>
 
-<br>
+
+    </bib-main>
+</bib-app>
+
 <p>
     Sei già registrato? <a href="{% url 'myapp:home' %}">Accedi qui</a> | Altrimenti,
-    <a href="{% url 'myapp:register' %}">registrati ora</a>  
-    <!--<a href="{% url 'myapp:admin_home' %}">ACCEDI DA AMMINISTRATORE</a><br>-->
+    <a href="{% url 'myapp:register' %}">registrati ora</a>
 </p>
- <!--   <p>
-        {% for nome,capienza in biblio.items %}
-            {% if capienza < 25 %}
-                <li> 
-                    {{ nome | capfirst }} <font color=greenyellow>Not busy ({{ capienza }}%)</font>
-                    {% for nome1,capienza1 in cap.items %}
-                        {% if nome == nome1 %}
-                            Capienza : {{capienza1}} 
-                        {% endif %}
-                    {% endfor %}
-                    {% for nome2,ext in extension.items %}
-                        {%if nome == nome2 %}
-                            <br>- Estensione : {{ext}}
-                        {%endif%}
-                    {% endfor %}
-                </li>
-            {% endif %}
-            {% if capienza >= 25 and capienza < 50 %}
-                <li> 
-                    {{ nome | capfirst }} - <font color=green>Medium ({{ capienza }}%)</font>
-                    {% for nome1,capienza1 in cap.items %}
-                        {% if nome == nome1 %}
-                            Capienza : {{capienza1}} 
-                        {% endif %}
-                    {% endfor %}
-                    {% for nome2,ext in extension.items %}
-                        {%if nome == nome2 %}
-                            <br>- Estensione : {{ext}}
-                        {%endif%}
-                    {% endfor %}
-                </li>
-            {% endif %}
-            {% if capienza >= 50 and capienza < 75 %}
-                <li> 
-                    {{ nome | capfirst }} - <font color=orange>Busy ({{ capienza }}%)</font>
-                    {% for nome1,capienza1 in cap.items %}
-                        {% if nome == nome1 %}
-                            Capienza : {{capienza1}} 
-                        {% endif %}
-                    {% endfor %}
-                    {% for nome2,ext in extension.items %}
-                        {%if nome == nome2 %}
-                            <br>- Estensione : {{ext}}
-                        {%endif%}
-                    {% endfor %}
-                </li>
-            {% endif %}
-            {% if capienza >= 75 %}
-                <li> 
-                    {{ nome | capfirst }} - <font color=red>Full ({{ capienza }}%)</font> -
-                    {% for nome1,capienza1 in cap.items %}
-                        {% if nome == nome1 %}
-                            Capienza : {{capienza1}} 
-                        {% endif %}
-                    {% endfor %}
-                    {% for nome2,ext in extension.items %}
-                        {%if nome == nome2 %}
-                            <br>- Estensione : {{ext}}
-                        {%endif%}
-                    {% endfor %}
-                </li>
-            {% endif %}
-            <br>
-        {% endfor %}
-    </p>
---> 
+{% endblock %}

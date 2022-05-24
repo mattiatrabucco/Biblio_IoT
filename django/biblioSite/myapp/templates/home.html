@@ -3,7 +3,13 @@
 
 Oggi ti consiglio di andare in <h2>{{ where_to_go | upper }}</h2>
 
-<br><br>
+<br>
+<form action="" method="post">
+    {% csrf_token %} 
+    <button name="reward" value="reward">Reward?</button>
+</form>
+<br>
+
 
 <a href="{% url 'myapp:index' %}">Vai alla home</a><br>
 <a href="{% url 'myapp:logout_view' %}">Esegui Logout</a>
