@@ -2,3 +2,4 @@ pyserial
 django
 python-decouple
 openpyxl
+pyTelegramBotAPI
