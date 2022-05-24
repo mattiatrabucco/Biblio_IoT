@@ -1,15 +1,47 @@
-<h1>Biblio IoT</h1>
-<h3>Ciao {{ utente }},</h3><br>
+{% extends "base.html" %}
+{% load static %}
 
-Oggi ti consiglio di andare in <h2>{{ where_to_go | upper }}</h2>
+{% block head %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/minze@1.0.3" ></script>
+<script src="{% static 'js/main.js' %}"></script>
+<link rel="shortcut icon" href="">
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
 
-<br>
-<form action="" method="post">
-    {% csrf_token %} 
-    <button name="reward" value="reward">Reward?</button>
-</form>
-<br>
+{% block body %}
+<bib-app>
+    <bib-sidebar active="home"></bib-sidebar>
+
+    <bib-main>
+        <bib-header>
+            <div slot="headline">Biblio IoT</div>
+            <div slot="sub-headline">Account</div>
+
+            <nav slot="nav">
+            <a href="https://unimore.it" target="_blank">Unimore</a>
+            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+            </nav>
+        </bib-header>
+
+        <bib-content>
+            <bib-welcome name="{{ utente }}" biblio="{{ where_to_go | upper }}"></bib-welcome>
+
+            <bib-button class="button">
+                <form action="" method="post">
+                  {% csrf_token %} 
+                  <button name="reward" value="reward">Posso ricevere un reward?</button>
+                </form>
+            </bib-button>
+            
+            <br><br><br><br>
+            <a href="{% url 'myapp:logout_view' %}">Logout</a>
+        </bib-content>
 
 
-<a href="{% url 'myapp:index' %}">Vai alla home</a><br>
-<a href="{% url 'myapp:logout_view' %}">Esegui Logout</a>
+    </bib-main>
+</bib-app>
+{% endblock %}

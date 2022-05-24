@@ -1,2 +1,37 @@
-<h1 style="color:greenyellow;">LOGOUT AVVENUTO CON SUCCESSO</h1><br>
-<p><a href="{% url 'myapp:index' %}">Torna alla home</a></p>
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/minze@1.0.3" ></script>
+<script src="{% static 'js/main.js' %}"></script>
+<link rel="shortcut icon" href="">
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block body %}
+<bib-app>
+    <bib-sidebar active="home"></bib-sidebar>
+
+    <bib-main>
+        <bib-header>
+            <div slot="headline">Biblio IoT</div>
+            
+
+            <nav slot="nav">
+            <a href="https://unimore.it" target="_blank">Unimore</a>
+            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+            </nav>
+        </bib-header>
+
+        <bib-content>
+            <p>Logout avvenuto con successo. Alla prossima!</p>
+        </bib-content>
+
+
+    </bib-main>
+</bib-app>
+{% endblock %}

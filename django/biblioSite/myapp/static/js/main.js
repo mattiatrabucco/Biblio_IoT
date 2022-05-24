@@ -21,18 +21,20 @@ class BibMain extends MinzeElement {
 BibMain.define()
 
 class BibSidebar extends MinzeElement {
+  attrs = ['active']
+
   html = () => `
     <div class="logo">
-      <img width="80%" height="auto" src="static/assets/logo.svg">
+      <img width="80%" height="auto" src="/static/assets/logo.svg">
     </div>
 
     <nav class="nav">
-      <div class="nav__entry nav__entry--active">
-        <img src="static/assets/icon-home.svg">
+      <div class="nav__entry ${this.active == "index" ? "nav__entry--active" : ''}">
+        <a href="/"><img src="/static/assets/icon-home.svg"></a>
       </div>
       
-      <div class="nav__entry">
-        <img src="static/assets/icon-user.svg">
+      <div class="nav__entry ${this.active == "home" ? "nav__entry--active" : ''}">
+        <a href="/home"><img src="/static/assets/icon-user.svg"></a>
       </div>
 
       <!-- -------------- COMMENTATO -----------------
@@ -219,6 +221,99 @@ class BibContent extends MinzeElement {
   `
 }
 BibContent.define()
+
+class BibWelcome extends MinzeElement {
+  attrs = ['name', 'biblio']
+
+  html = () => `
+    <div>
+      <p class="text">Bentornato,</p>
+      <h2 class="headline">${this.name ?? ''}</h2>
+    </div>
+
+    <div>
+      <p class="text-consiglio">Oggi ti consiglio di andare in <b>${this.biblio ?? ''}</b></p>
+      <h2 class="headline"></h2>
+    </div>
+
+    
+
+    <img src="/static/assets/icon-sun.svg" class="icon">
+  `
+
+  css = () => `
+    :host {
+      width: 100%;
+      background: rgb(228 228 231);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      padding: 24px;
+      margin-bottom: 48px;
+    }
+
+    .text {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .text-consiglio {
+      font-size: 18px;
+      margin-top: 50px;
+    }
+
+    .headline {
+      font-size: 30px;
+      margin: 0;
+    }
+
+    .button {
+      margin-top: 32px;
+    }
+
+    .icon {
+      width: 512px;
+      height: 512px;
+      opacity: 5%;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      transform: translate(0, 50%);
+    }
+  `
+}
+BibWelcome.define()
+
+class BibButton extends MinzeElement {
+  attrs = ['href', 'target', 'rel']
+
+  html = () => `
+    <a
+      ${this.href ? `href="${this.href}"` : ''}
+      ${this.target ? `href="${this.target}"` : ''}
+      ${this.rel ? `href="${this.rel}"` : ''}
+    >
+      <slot></slot>
+    </a>
+  `
+
+  css = () => `
+    :host {
+      display: inline-block;
+      background: rgb(63, 63, 70);
+      color: rgb(255 255 255);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s ease-in-out;
+      padding: 8px 16px;
+    }
+
+    :host(:hover) {
+      background: rgb(82, 82, 91);
+    }
+  `
+}
+BibButton.define()
 
 class InfoCard extends MinzeElement {
   attrs = ['top-line', 'headline', 'value', 'background']

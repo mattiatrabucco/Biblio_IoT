@@ -1,17 +1,38 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% comment %} Main page to authenticate users. {% endcomment %} 
 
 {% block head %}
     <title>Django Mysite | Login</title>
+
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://unpkg.com/minze@1.0.3" ></script>
+<script src="{% static 'js/main.js' %}"></script>
+<link rel="shortcut icon" href="">
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
 
 {% block body %}
-    <header>
-        <h1>Django Mysite</h1> <h2>Login Page</h2>
-    </header> 
-    <section>
-        {% if form.errors %}
+<bib-app>
+    <bib-sidebar active="home"></bib-sidebar>
+
+    <bib-main>
+        <bib-header>
+            <div slot="headline">Biblio IoT</div>
+            
+
+            <nav slot="nav">
+            <a href="https://unimore.it" target="_blank">Unimore</a>
+            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+            </nav>
+        </bib-header>
+
+        <bib-content>
+            {% if form.errors %}
             <p style="color:red;">Your username and password didn't match, please try again.</p>
         {% endif %}
         
@@ -25,8 +46,13 @@
             {% else %}
                 <input type="hidden" name="next" value="/portal/" />
             {% endif %}
-                <input type="submit" value="login" />
+                <bib-button class="button">
+                    <input type="submit" value="Login" />
+                </bib-button>
         </form>
-    </section>
-    <a href="{% url 'myapp:index' %}">Torna alla pagina principale</a><br>
+        </bib-content>
+
+
+    </bib-main>
+</bib-app>
 {% endblock %}
