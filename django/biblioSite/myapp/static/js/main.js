@@ -59,12 +59,6 @@ class BibSidebar extends MinzeElement {
       background: rgb(39 39 42);
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
     }
-
-    @media (min-width: 768px) {
-      :host {
-        width: 120px;
-      }
-    }
     
     .logo {
       width: 100%;
@@ -75,7 +69,7 @@ class BibSidebar extends MinzeElement {
       border-bottom: 1px solid rgb(82 82 91);
       
     }
-
+    
     .nav {
       padding: 32px 0;
     }
@@ -106,15 +100,48 @@ class BibSidebar extends MinzeElement {
       bottom: 0;
       left: 0;
     }
+    
+    @media (max-width: 768px) {
+      :host {
+        display: none;
+      }
+
+      .logo {
+        display: none;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .nav__entry {
+        display: none;
+      }
+
+      .nav__entry--active {
+        display: none;
+      }
+  
+      .nav__entry--active::before {
+        display: none;
+      }
+    }
   `
 }
 BibSidebar.define()
 
 class BibHeader extends MinzeElement {
+  attrs = ['active']
+
   html = () => `
     <div>
       <h1 class="headline"><slot name="headline"></slot></h1>
       <p class="sub-headline"><slot name="sub-headline"></slot></p>
+    </div>
+
+    <div class="mobilemenu">
+      <a ${this.active == "index" ? `style="border-bottom: 1px solid;"` : ''} href="/"><img src="/static/assets/icon-home.svg"></a>
+      <a ${this.active == "home" ? `style="border-bottom: 1px solid;"` : ''} href="/home"><img src="/static/assets/icon-user.svg"></a>
     </div>
 
     <slot name="nav"></slot>
@@ -128,12 +155,31 @@ class BibHeader extends MinzeElement {
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid rgb(212 212 216);
-      padding: 0 24px;
+      padding: 0 48px;
     }
 
-    @media (min-width: 768px) {
+    .mobilemenu {
+      display: none;
+    }
+
+    ::slotted(nav) {
+      display: flex;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
       :host {
-        padding: 0 48px;
+        padding: 0 24px;
+      }
+
+      ::slotted(nav) {
+        display: none;
+      }
+
+      .mobilemenu {
+        display: flex;
+        gap: 16px;
+        filter: invert(75%)
       }
     }
 
@@ -148,10 +194,6 @@ class BibHeader extends MinzeElement {
       margin: 0;
     }
 
-    ::slotted(nav) {
-      display: flex;
-      gap: 16px;
-    }
   `
 }
 BibHeader.define()
@@ -170,12 +212,12 @@ class BibWrap extends MinzeElement {
   css = () => `
     :host {
       width: 100%;
-      margin-bottom: 4px;
+      margin-bottom: ${this.nowrap ? '35px' : '1px'};
     }
 
     @media (min-width: 768px) {
       :host {
-        margin-bottom: 8px;
+        margin-bottom: 20px;
       }
     }
 
@@ -186,7 +228,7 @@ class BibWrap extends MinzeElement {
     }
 
     .headline {
-      margin: 0 0 14px;
+      margin: 0 0 10px;
     }
 
     .wrap {
@@ -315,6 +357,66 @@ class BibButton extends MinzeElement {
 }
 BibButton.define()
 
+class BibAccordionMobile extends MinzeElement {
+  reactive = [['open', false]]
+
+  toggleOpen = () => this.open = !this.open
+
+  html = () => `
+    <div class="title">
+      <slot name="title"></slot>
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor" class="arrow">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </div>
+
+    <slot name="content"></slot>
+  `
+
+  css = () => `
+  
+  
+  .title {
+    display: none;
+  }
+  
+  ::slotted([slot=content]) {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    :host {
+      background: rgb(228 228 231);
+      font-family: sans-serif;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      user-select: none;
+      padding: 16px;
+    }
+
+    .arrow {
+      transition: transform 0.2s ease-in-out;
+      transform: ${this.open ? 'rotate(180deg)' : 'rotate(0)'};
+    }
+
+    ::slotted([slot=content]) {
+      display: ${this.open ? 'block' : 'none'};
+      padding: 16px;
+    }
+  }
+  `
+
+  eventListeners = [['.title', 'click', this.toggleOpen]]
+}
+BibAccordionMobile.define()
+
 class InfoCard extends MinzeElement {
   attrs = ['top-line', 'headline', 'value', 'background']
 
@@ -330,19 +432,20 @@ class InfoCard extends MinzeElement {
   css = () => `
     :host {
       width: 200px;
-      height: 180px;
+      height: 90px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       background: ${this.background ?? 'transparent'};
       font-family: sans-serif;
       border-radius: 2px;
-      padding: 24px 24px 16px;
+      padding: 10px 20px 10px;
     }
 
     .top-line {
       font-size: 16px;
-      margin-top: 2px;
+      font-weight: bold;
+      margin-top: auto;
     }
 
     .headline {
@@ -362,7 +465,6 @@ class InfoCard extends MinzeElement {
     }
   `
 }
-
 InfoCard.define()
 
 class ExtraCard extends MinzeElement {
@@ -378,14 +480,14 @@ class ExtraCard extends MinzeElement {
   css = () => `
     :host {
       width: 200px;
-      height: 180px;
+      height: 90px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       background: ${this.background ?? 'transparent'};
       font-family: sans-serif;
       border-radius: 2px;
-      padding: 24px 24px 16px;
+      padding: 10px 20px 10px;
     }
 
     .container {
@@ -408,5 +510,4 @@ class ExtraCard extends MinzeElement {
 
   `
 }
-
 ExtraCard.define()

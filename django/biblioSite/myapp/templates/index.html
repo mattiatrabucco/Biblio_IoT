@@ -18,26 +18,25 @@
     <bib-sidebar active="index"></bib-sidebar>
 
     <bib-main>
-      <bib-header>
+      <bib-header active="index">
         <div slot="headline">Biblio IoT</div>
         <div slot="sub-headline">Dashboard</div>
 
         <nav slot="nav">
           <a href="https://unimore.it" target="_blank">Unimore</a>
-          <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+          <a href="https://github.com/mattiatrabucco/Biblio_IoT" target="_blank">GitHub</a>
         </nav>
       </bib-header>
 
       <bib-content>
         {% if biblioteche %}
         {% for biblio_name, biblio_data in biblioteche.items %}
-            <bib-wrap nowrap="true">
-                <bib-wrap width="50%">
+            <bib-wrap nowrap="true" headline="{{ biblio_name | upper}}:">
+                <bib-wrap width="50%" >
                     {% if biblio_data.closed %}
                         <info-card
                             top-line="--"
                             headline="CHIUSA"
-                            value="{{ biblio_name | upper}}"
                             background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
                         ></info-card>
                     {% else %}
@@ -45,7 +44,6 @@
                             <info-card
                                 top-line="{{ biblio_data.percentage }}%"
                                 headline="QUASI VUOTA"
-                                value="{{ biblio_name | upper}}"
                                 background="linear-gradient(220.64deg, #bef4de 0%, #59e3ac 100%)"
                             ></info-card>
                         {% endif %}
@@ -53,7 +51,6 @@
                             <info-card
                                 top-line="{{ biblio_data.percentage }}%"
                                 headline="POCO AFFOLLATA"
-                                value="{{ biblio_name | upper}}"
                                 background="linear-gradient(220.64deg, #e6e6ff 0%, #9999ff 100%)"
                             ></info-card>
                         {% endif %}
@@ -61,7 +58,6 @@
                             <info-card
                                 top-line="{{ biblio_data.percentage }}%"
                                 headline="MOLTO AFFOLLATA"
-                                value="{{ biblio_name | upper}}"
                                 background="linear-gradient(220.64deg, #ffe9e5 0%, #ffb9aa 100%)"
                             ></info-card>
                         {% endif %}
@@ -69,7 +65,6 @@
                             <info-card
                                 top-line="{{ biblio_data.percentage }}%"
                                 headline="PIENA"
-                                value="{{ biblio_name | upper}}"
                                 background="linear-gradient(220.64deg, #ffcace 0%, #ff5462 100%)"
                             ></info-card>
                         {% endif %}
@@ -101,6 +96,16 @@
             </bib-wrap>
         {% endfor %}
         {% endif %}
+        <bib-accordion-mobile>
+            <div slot="title">
+                Più info
+              </div>
+
+              <div slot="content">
+                <a href="https://unimore.it" target="_blank">Visita il sito UniMoRe</a> <br><br>
+                <a href="https://github.com/mattiatrabucco/Biblio_IoT" target="_blank">Visualizza la repo su GitHub</a>
+              </div>
+        </bib-accordion-mobile>
       </bib-content>
 
 
