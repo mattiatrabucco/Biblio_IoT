@@ -8,7 +8,7 @@ from django.template import loader
 from django.contrib import admin
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
@@ -162,9 +162,9 @@ biblioteche_facolta = {
 def add_reward_log(utente,biblio_suggestion):
     try :
         reward=RewardsLog.objects.get(id_user=utente.mail[0:6],date=str(datetime.now())[0:10])
-        reward.suggestion=biblio_suggestion
-        print("aggiornato")
-        reward.save()
+        #reward.suggestion=biblio_suggestion
+        print("già consigliato")
+        #reward.save()
     except (RewardsLog.DoesNotExist):
         reward=RewardsLog.objects.create(id_user=utente.mail[0:6],date=str(datetime.now())[0:10],suggestion=biblio_suggestion)
         print("creato")
@@ -184,18 +184,36 @@ def where_to_go(utente):
         add_reward_log(utente,biblio.nome)
         return biblio.nome
 
+def check_reward(utente):
+    pass
+
 @login_required
 def home(request):
+    # if this is a POST request we need to process the form data
     template = loader.get_template('home.html')
     nome_utente = request.user.username + "@studenti.unimore.it"
-    utente = TessereUnimore.objects.get(mail=nome_utente)
-
+    try :
+        utente = TessereUnimore.objects.get(mail=nome_utente)
+    except (TessereUnimore.DoesNotExist):
+        return redirect('myapp:index')
+    
     context = {
         'utente' : request.user.username,
         'where_to_go' : where_to_go(utente)
         }
-    
-    return HttpResponse(template.render(context, request))
+
+    if request.method == 'GET':
+        return HttpResponse(template.render(context, request))
+    else:
+        try:
+            reward = request.POST['reward']
+            if reward == "reward":
+                check_reward(utente)
+
+        except (KeyError):
+            return redirect('myapp:home')
+
+        return HttpResponse(template.render(context, request))
 
 @login_required
 def admin_home(request):

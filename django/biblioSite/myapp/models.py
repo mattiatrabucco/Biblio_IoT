@@ -167,15 +167,10 @@ class Biblioteche(models.Model):
         verbose_name_plural = "biblioteche"
 
 class RewardsLog(models.Model):
-    id_user=models.TextField(blank=True,primary_key=True, verbose_name="codice utente")
-    date=models.TextField(blank=True,  verbose_name="data della suggestion")
+    id_user=models.TextField( verbose_name="codice utente")
+    date=models.TextField( verbose_name="data della suggestion")
     suggestion=models.TextField(verbose_name="suggestion")
 
     class Meta:
         db_table = 'rewards_log'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['id_user', 'date'], name='id_for_a_date'
-            )
-        ]
 
