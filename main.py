@@ -2,6 +2,7 @@ import serial
 import sqlite3
 from datetime import datetime
 
+facolta='ingmo'
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def select_from_db(what, table, db_name):
     con = sqlite3.connect(db_name)
@@ -35,7 +36,7 @@ def log_insert(cardid):
     con = sqlite3.connect("tessere.db")
     cur = con.cursor()
 
-    cur.execute("INSERT INTO log_ingmo VALUES (?, ?, ?)", (cardid, datetime.now(), "IN"))
+    cur.execute("INSERT INTO log_unimo VALUES (?, ?, ?, ?)", (cardid, datetime.now(), "IN", facolta))
     
     con.commit()
     con.close()
@@ -44,7 +45,7 @@ def log_remove(cardid):
     con = sqlite3.connect("tessere.db")
     cur = con.cursor()
 
-    cur.execute("INSERT INTO log_ingmo VALUES (?, ?, ?)", (cardid, datetime.now(), "OUT"))
+    cur.execute("INSERT INTO log_unimo VALUES (?, ?, ?, ?)", (cardid, datetime.now(), "OUT", facolta))
     
     con.commit()
     con.close()

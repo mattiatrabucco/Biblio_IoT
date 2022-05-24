@@ -14,7 +14,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
-from .models import Biblioteche, RewardsLog, TessereUnimore
+from .models import Biblioteche, LogUnimo, RewardsLog, TessereUnimore
 import string
 import json
 
@@ -185,7 +185,22 @@ def where_to_go(utente):
         return biblio.nome
 
 def check_reward(utente):
-    pass
+    rowReward = RewardsLog.objects.get(id_user = utente.mail[0:6],date=str(datetime.now())[0:10])
+    #userTessera=TessereUnimore.objects.get(mail=(utente.username + "@studenti.unimore.it"))
+    try:
+        print(utente.id_tessera)
+        
+        place = LogUnimo.objects.filter(id_tessera=utente.id_tessera,mode='IN')
+        print(place)
+        #timestamp=str(datetime.now())
+        for i in place:
+            if i.timestamp[0:10]==str(datetime.now())[0:10]:
+                if i.facolta == rowReward.suggestion:
+                    return "OK"
+                return "NO"
+    except(LogUnimo.DoesNotExist):
+        return False
+    
 
 @login_required
 def home(request):
@@ -208,7 +223,8 @@ def home(request):
         try:
             reward = request.POST['reward']
             if reward == "reward":
-                check_reward(utente)
+                context['reward']=check_reward(utente)
+
 
         except (KeyError):
             return redirect('myapp:home')

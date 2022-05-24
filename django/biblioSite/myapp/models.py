@@ -145,14 +145,14 @@ class BiblioIngmoCurrent(models.Model):
         managed = False
         db_table = 'biblio_ingmo_current'
 
-class LogIngmo(models.Model):
-    id_tessera = models.ForeignKey(TessereUnimore,on_delete=models.CASCADE)
+class LogUnimo(models.Model):
+    id_tessera = models.ForeignKey(TessereUnimore,on_delete=models.CASCADE,db_column='id_tessera')
     timestamp = models.TextField(blank=True, primary_key=True)
     mode = models.TextField(blank=True, null=True)
-
+    facolta=models.TextField(default='ingmo')
     class Meta:
         managed = False
-        db_table = 'log_ingmo'
+        db_table = 'log_unimo'
         
 class Biblioteche(models.Model):
     nome = models.TextField(blank=True, primary_key=True, verbose_name="nome biblioteca")
