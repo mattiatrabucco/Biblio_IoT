@@ -28,7 +28,7 @@
         </bib-header>
 
         <bib-content>
-            <bib-welcome name="{{ utente }}" biblio="{{ where_to_go | upper }}"></bib-welcome>
+            <bib-welcome name="{{ utente.nome }} {{ utente.cognome }}" biblio="{{ where_to_go | upper }}"></bib-welcome>
 
             <bib-button class="button">
                 <form action="" method="post">
@@ -37,7 +37,20 @@
                 </form>
             </bib-button>
             
-            <br><br><br><br>
+            <br><br>
+            {% if reward == "OK" %}
+            <p>Reward già riscattato.</p>
+            <p>Livello rewards {{ utente.rewards_counter }}</p>
+            {% elif reward == "NO" %}
+            <p>Non sei ancora entrato nella biblioteca suggerita.</p>
+            <p>Livello rewards {{ utente.rewards_counter }}</p>
+            {% elif reward == "FIRST" %}
+            <p>Riscattato ora il tuo reward di oggi!</p>
+            <p>Livello rewards {{ utente.rewards_counter }}</p>
+            {% endif %}
+
+            
+            <br><br>
             <a href="{% url 'myapp:logout_view' %}">Logout</a>
         </bib-content>
 

@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'biblioSite.urls'
@@ -78,8 +78,8 @@ WSGI_APPLICATION = 'biblioSite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
-        'NAME': 'C:\\Users\\ASUS\\Desktop\\IOT\\Biblio_IoT\\tessere.db',
+        'NAME': '/Users/mat/Documents/Arduino/Biblio_IoT/tessere.db',
+        #'NAME': 'C:\\Users\\ASUS\\Desktop\\IOT\\Biblio_IoT\\tessere.db',
     }
 }
 

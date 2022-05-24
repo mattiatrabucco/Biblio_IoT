@@ -196,6 +196,12 @@ def check_reward(utente):
         for i in place:
             if i.timestamp[0:10]==str(datetime.now())[0:10]:
                 if i.facolta == rowReward.suggestion:
+                    if utente.rewards_lastmodified != str(datetime.now())[0:10]:
+                        utente.rewards_lastmodified = str(datetime.now())[0:10]
+                        utente.rewards_counter = utente.rewards_counter + 1
+                        utente.save()
+                        return "FIRST"
+
                     return "OK"
                 return "NO"
     except(LogUnimo.DoesNotExist):
@@ -213,7 +219,7 @@ def home(request):
         return redirect('myapp:index')
     
     context = {
-        'utente' : request.user.username,
+        'utente' : utente,
         'where_to_go' : where_to_go(utente)
         }
 

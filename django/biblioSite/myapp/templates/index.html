@@ -30,9 +30,9 @@
 
       <bib-content>
         {% if biblioteche %}
-        <bib-wrap >
-            {% for biblio_name, biblio_data in biblioteche.items %}
-                <bib-wrap >
+        {% for biblio_name, biblio_data in biblioteche.items %}
+            <bib-wrap nowrap="true">
+                <bib-wrap width="50%">
                     {% if biblio_data.closed %}
                         <info-card
                             top-line="--"
@@ -74,29 +74,32 @@
                             ></info-card>
                         {% endif %}
                     {% endif %}
-                
-    
-                {% if biblio_data.closed %}
-                    <extra-card
-                        first-line="Orario di oggi: {{ biblio_data.opening_hours }}"
-                        background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
-                    ></extra-card>
-                {% else %}
-                    {% if biblio_data.extension != "N/A" %}
-                       <extra-card
-                            first-line="Estesa in {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) dalle {{ biblio_data.extension.open_from }} alle {{ biblio_data.extension.open_until }}"
-                            background="linear-gradient(220.64deg, #bef4de 0%, #59e3ac 100%)"
+                </bib-wrap>    
+                <bib-wrap width="50%">
+                    {% if biblio_data.closed %}
+                        <extra-card
+                            first-line="Orario di oggi: {{ biblio_data.opening_hours }}"
+                            background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
                         ></extra-card>
+                    {% else %}
+                    
+                        {% if biblio_data.extension != "N/A" %}
+                        <extra-card
+                                first-line="Estesa in {{ biblio_data.extension.name }} ({{ biblio_data.extension.capacity }} posti) dalle {{ biblio_data.extension.open_from }} alle {{ biblio_data.extension.open_until }}"
+                                background="linear-gradient(220.64deg, #bef4de 0%, #59e3ac 100%)"
+                            ></extra-card>
+                        {% endif %}
+                        <extra-card
+                            first-line="Posti totali: {{ biblio_data.capacity }}"
+                            second-line="Orario di oggi: {{ biblio_data.opening_hours }}"
+                            background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
+                        ></extra-card>
+                    
                     {% endif %}
-                    <extra-card
-                        first-line="Posti totali: {{ biblio_data.capacity }}"
-                        second-line="Orario di oggi: {{ biblio_data.opening_hours }}"
-                        background="linear-gradient(220.64deg, #E7E7E7 0%, #858585 100%)"
-                    ></extra-card>
-                {% endif %}
+                    
                 </bib-wrap>
-            {% endfor %}
-        </bib-wrap>
+            </bib-wrap>
+        {% endfor %}
         {% endif %}
       </bib-content>
 

@@ -133,6 +133,9 @@ class TessereUnimore(models.Model):
     id_tessera = models.TextField(blank=True, primary_key=True)
     mail = models.TextField(unique=True, blank=True, null=True, verbose_name="email di Ateneo")
     is_registered = models.BooleanField(blank=True, verbose_name="registrato su app")
+    rewards_counter = models.IntegerField(default=0, verbose_name="contatore dei rewards ottenuti")
+    rewards_lastmodified = models.TextField(null=True, verbose_name="data modifica del contatore rewards")
+    telegram_id = models.TextField(null=True, verbose_name="username Telegram")
 
     class Meta:
         db_table = 'tessere_unimore'
