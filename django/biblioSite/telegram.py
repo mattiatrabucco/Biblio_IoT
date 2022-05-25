@@ -2,6 +2,7 @@
 # It echoes any incoming text messages.
 import os
 import django
+from decouple import config
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'biblioSite.settings')
 django.setup()
@@ -10,7 +11,7 @@ import telebot
 from myapp.models import TessereUnimore
 from myapp.views import where_to_go
 
-API_TOKEN = ''
+API_TOKEN = config("TELEGRAM_SECRET_KEY")
 
 bot = telebot.TeleBot(API_TOKEN)
 
