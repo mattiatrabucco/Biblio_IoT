@@ -3,7 +3,7 @@ from datetime import datetime
 import calendar
 from django.http import HttpResponse
 from django.template import loader
-
+import re
 
 from django.contrib import admin
 
@@ -229,11 +229,18 @@ def home(request):
         try:
             reward = request.POST['reward']
             if reward == "reward":
-                context['reward']=check_reward(utente)
-
+                context['reward'] = check_reward(utente)
 
         except (KeyError):
-            return redirect('myapp:home')
+            try:
+                telegram_username = request.POST['telegram']
+                
+                if re.match(r'^[A-Za-z0-9_]+$', telegram_username):
+                    utente.telegram_id = telegram_username
+                    utente.save()
+
+            except (KeyError):
+                return redirect('myapp:home')
 
         return HttpResponse(template.render(context, request))
 

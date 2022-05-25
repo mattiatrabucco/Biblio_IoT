@@ -22,8 +22,9 @@
             <div slot="sub-headline">Account</div>
 
             <nav slot="nav">
-            <a href="https://unimore.it" target="_blank">Unimore</a>
-            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+            <!--<a href="https://unimore.it" target="_blank">Unimore</a>
+            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>-->
+            <a href="{% url 'myapp:logout_view' %}">Logout</a>
             </nav>
         </bib-header>
 
@@ -49,9 +50,24 @@
             <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% endif %}
 
-            
             <br><br>
-            <a href="{% url 'myapp:logout_view' %}">Logout</a>
+            <bib-accordion>
+                <div slot="title">
+                    Impostazioni Telegram Bot
+                </div>
+                <div slot="content">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        Inserisci qui il tuo username Telegram:
+                        <input type="text" id="telegram" name="telegram" required>
+                        <br><br>
+                        <bib-button class="button">
+                            <input type="submit" value="Salva">
+                        </bib-button>
+                    </form>
+                </div>
+            </bib-accordion>
+            
         </bib-content>
 
 
