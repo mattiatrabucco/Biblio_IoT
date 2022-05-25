@@ -10,7 +10,7 @@ import telebot
 from myapp.models import TessereUnimore
 from myapp.views import where_to_go
 
-API_TOKEN = '5230393639:AAFfdGklMihEkah5yEu9wQeYoXTD35fSRO8'
+API_TOKEN = ''
 
 bot = telebot.TeleBot(API_TOKEN)
 
