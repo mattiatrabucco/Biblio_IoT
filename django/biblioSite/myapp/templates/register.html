@@ -1,58 +1,75 @@
 {% extends "base.html" %}
 
-{% comment %} Page to register users. {% endcomment %} 
-
 {% block head %}
-    <title>BiblioIoT | Registrati</title>
+    <title>Registrati | Biblio IoT</title>
 {% endblock %}
 
 {% block body %}
-    <header>
-        <h1>BiblioIoT</h1> 
-        <h2>Registrati</h2>
-    </header> 
-    <section>
-        {% if first %}
-            <p>Per registrarti inserisci mail UniMoRe, l'ID tessera NFC e la password nei campi sottostanti:</p>
-        {% endif %}
+<bib-app>
+    <bib-sidebar active="home"></bib-sidebar>
 
-        {% if email_number_error %}
-            <p style="color:red;">Errore nel campo mail.</p>
-        {% endif %}
-        {% if psw_error %}
-            <p style="color:red;">Errore nel campo password.</p>
-        {% endif %}
-        {% if card_id_error %}
-            <p style="color:red;">Errore nel campo ID tessera.</p>
-        {% endif %}
-        {% if error %}
-            <p style="color:red;">Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
-        {% endif %}
-        {% if already_registered %}
-            <p style="color:red;">Sei già registrato!</p>
-        {% endif %}
-
-        {% if ok %}
-            <p style="color:greenyellow;">Registrazione completata!</p>
-            <p><a href="{% url 'myapp:home' %}">Vai al login.</a></p>
-        {% endif %}
-
-        <form method="post"> 
-            {% csrf_token %} 
-            <label for="user">Mail UniMoRe (solo cifre): </label>
-            <input type="text" name="email_number" id="email_number" required/>@studenti.unimore.it <br><br>
+    <bib-main>
+        <bib-header>
+            <div slot="headline">Biblio IoT</div>
             
-            <label for="card_id">ID tessera NFC: </label>
-            <input type="text" name="card_id" id="card_id" required/> <br><br>
 
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="password" required/> <br><br>
+            <nav slot="nav">
+            <a href="https://unimore.it" target="_blank">Unimore</a>
+            <a href="https://github.com/mattiatrabucco/BiblioIoT" target="_blank">GitHub</a>
+            </nav>
+        </bib-header>
+        
+        <bib-content>
+            <bib-wrap headline="Registrati">
+            </bib-wrap>
+                
+            {% if first %}
+            <p>Crea un account inserendo qui sotto la tua mail UNIMORE, l'ID tessera NFC e una password:</p>
+            {% endif %}
 
-            <input type="submit" value="Registrati" /><br><br>
-            
-        </form>
-        <p><a href="{% url 'myapp:index' %}">Torna alla home</a><br></p>
-    </section>
-    
+            {% if email_number_error %}
+                <p style="color:red;">Errore nel campo mail.</p>
+            {% endif %}
+            {% if psw_error %}
+                <p style="color:red;">Errore nel campo password.</p>
+            {% endif %}
+            {% if card_id_error %}
+                <p style="color:red;">Errore nel campo ID tessera.</p>
+            {% endif %}
+            {% if error %}
+                <p style="color:red;">Registrazione fallita. Controlla che i campi inseriti siano corretti!</p>
+            {% endif %}
+            {% if already_registered %}
+                <p style="color:red;">Sei già registrato!</p>
+            {% endif %}
+
+            {% if ok %}
+                <p style="color:greenyellow;">Registrazione completata!</p>
+                <p><a href="{% url 'myapp:home' %}">Vai al login.</a></p>
+            {% endif %}
+
+            <form style="padding: 25px;" method="post"> 
+                {% csrf_token %} 
+                <label for="user"><b>Mail UNIMORE (solo cifre): </b></label>
+                <input type="text" name="email_number" id="email_number" required/>@studenti.unimore.it <br><br>
+                
+                <label for="card_id"><b>ID tessera NFC: </b></label>
+                <input type="text" name="card_id" id="card_id" required/> <br><br>
+
+                <label for="password"><b>Password: </b></label>
+                <input type="password" name="password" id="password" required/> <br><br>
+
+                <bib-button class="button">
+                    <input type="submit" value="Registrati" />
+                </bib-button>
+            </form>
+
+            <br>
+            Se hai già un account, <a href="/home">accedi qui.</a>
+             
+        </bib-content>
+    </bib-main>
+</bib-app>
 {% endblock %}
+
 
