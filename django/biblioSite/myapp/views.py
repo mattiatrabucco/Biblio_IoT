@@ -215,6 +215,17 @@ def redeem_reward(utente):
     else:
         return "NO"
 
+def rewards_level(counter):
+    if counter < 1:
+        return 0
+    elif counter < 5:
+        return 1
+    elif counter < 10:
+        return 2
+    elif counter < 50:
+        return 3
+    else:
+        return 4
 
 @login_required
 def home(request):
@@ -228,7 +239,8 @@ def home(request):
     
     context = {
         'utente' : utente,
-        'where_to_go' : where_to_go(utente)
+        'where_to_go' : where_to_go(utente),
+        'rewards_level': rewards_level(utente.rewards_counter)
         }
 
     if request.method == 'GET':

@@ -29,7 +29,8 @@
         </bib-header>
 
         <bib-content>
-            <bib-welcome name="{{ utente.nome }} {{ utente.cognome }}" biblio="{{ where_to_go | upper }}"></bib-welcome>
+            <bib-welcome name="{{ utente.nome }} {{ utente.cognome }}" biblio="{{ where_to_go | upper }}" rewards_level="{{ rewards_level }}"></bib-welcome>
+
 
             <bib-button class="button">
                 <form action="" method="post">
@@ -49,8 +50,21 @@
             <p>Riscattato ora il tuo reward di oggi!</p>
             <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% endif %}
+            
+            <br>
+            <bib-accordion>
+                <div slot="title">
+                    Informazioni reward
+                </div>
+                <div slot="content">
+                    Il tuo livello attuale è <b>{{ utente.rewards_counter }}</b>
+                    <br><br>
+                    Ottieni un reward per ogni ingresso in una biblioteca consigliata 
+                    e conquisti nuove medaglie continuando a seguire i nostri consigli.  
 
-            <br><br>
+                </div>
+            </bib-accordion>
+            <br>
             <bib-accordion>
                 <div slot="title">
                     Impostazioni Telegram Bot

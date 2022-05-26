@@ -265,22 +265,20 @@ class BibContent extends MinzeElement {
 BibContent.define()
 
 class BibWelcome extends MinzeElement {
-  attrs = ['name', 'biblio']
+  attrs = ['name', 'biblio', 'rewards_level']
 
   html = () => `
-    <div>
-      <p class="text">Bentornato,</p>
-      <h2 class="headline">${this.name ?? ''}</h2>
-    </div>
-
-    <div>
-      <p class="text-consiglio">Oggi ti consiglio di andare in <b>${this.biblio ?? ''}</b></p>
-      <h2 class="headline"></h2>
-    </div>
-
-    
-
-    <img src="/static/assets/icon-sun.svg" class="icon">
+  <div>
+    <p class="text">Bentornato,</p>
+    <h2 class="headline">${this.name ?? ''}</h2>
+  </div>
+  
+  <div>
+    <p class="text-consiglio">Oggi ti consiglio di andare in <b>${this.biblio ?? ''}</b></p>
+    <h2 class="headline"></h2>
+  </div>
+  
+  <img src="/static/assets/badge-${this.rewards_level}.svg" class="badge">
   `
 
   css = () => `
@@ -321,6 +319,23 @@ class BibWelcome extends MinzeElement {
       right: 0;
       bottom: 0;
       transform: translate(0, 50%);
+    }
+
+    .badge {
+      width: 25vh;
+      height: 100%;
+      position: absolute;
+      right: 50px;
+      top: 0;
+    }
+
+    @media (max-width: 768px) {
+      .badge {
+        position: relative;
+        left: 0;
+        margin-top: 32px;
+        width: 40%
+      }
     }
   `
 }
