@@ -42,13 +42,10 @@
             <br><br>
             {% if reward == "ALREADY" %}
             <p>Reward già riscattato.</p>
-            <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% elif reward == "NO" %}
             <p>Non sei ancora entrato nella biblioteca suggerita.</p>
-            <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% elif reward == "DONE" %}
             <p>Riscattato ora il tuo reward di oggi!</p>
-            <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% endif %}
             
             <br>
