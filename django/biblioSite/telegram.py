@@ -105,28 +105,26 @@ Attualmente non hai un nome_utente Telegram, ma puoi rimediare! Sceglilo ora nel
         else:
             bot.send_message(message.chat.id, "Reward non riscattato. Sei sicuro di essere entrato nella biblioteca suggerita?")
 
+# Handle '/set'
+@bot.message_handler(commands=['set'])
+def send_bestbiblio(message):
+    
+    bot.send_message(message.chat.id, "Visita l'area riservata del nostro sito <a href='http://192.168.23.113:8000/home'>premendo qui</a>", parse_mode="HTML")
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 @bot.message_handler(func=lambda message: True)
 def message(message):
     
-    keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.add(telebot.types.KeyboardButton(text="Bot, mostrami la miglior biblioteca in cui andare adesso"))
+    '''keyboard = telebot.types.ReplyKeyboardMarkup()
+    keyboard.add(telebot.types.KeyboardButton(text="Mostrami la miglior biblioteca in cui andare adesso /bestbiblio"))
+    keyboard.add(telebot.types.KeyboardButton(text="Ottieni il reward di oggi /reward"))
     #keyboard.add(telebot.types.KeyboardButton(text="Ciao 2"))
-    '''menu1 = telebot.types.InlineKeyboardMarkup()
+    menu1 = telebot.types.InlineKeyboardMarkup()
     menu1.add(telebot.types.InlineKeyboardButton(text = 'Prova 1', callback_data ='first'))
     menu1.add(telebot.types.InlineKeyboardButton(text = 'Prova 2', callback_data ='second'))
     msg = bot.send_message(message.chat.id, text ='Ciao', reply_markup = menu1)'''
 
-    if message.text == 'Bot, mostrami la miglior biblioteca in cui andare adesso':
-        #msg = bot.send_message(message.chat.id, text ='boooh', reply_markup = menu1)
-        #bot.register_next_step_handler(msg, step2)
-        #bot.reply_to(message, (message.text + str(where_to_go(TessereUnimore.objects.get(telegram_id="trabosamba")))))
-        dove_andare = str(where_to_go(TessereUnimore.objects.get(telegram_id="trabosamba"))).upper()
-        risposta = f"La miglior biblioteca in cui andare ora è: { dove_andare }"
-        bot.send_message(message.chat.id, risposta, reply_markup=keyboard)
-    else:
-         bot.send_message(message.chat.id, "Sono spiacente, il comando non è supportato", reply_markup=keyboard)
+    bot.send_message(message.chat.id, "Sono spiacente, il comando non è supportato. Prova con /help")
 
 
 bot.polling()
