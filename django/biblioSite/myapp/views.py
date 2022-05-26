@@ -184,29 +184,37 @@ def where_to_go(utente):
         add_reward_log(utente,biblio.nome)
         return biblio.nome
 
-def check_reward(utente):
-    rowReward = RewardsLog.objects.get(id_user = utente.mail[0:6],date=str(datetime.now())[0:10])
-    #userTessera=TessereUnimore.objects.get(mail=(utente.username + "@studenti.unimore.it"))
+# Ricerca tra i log dell'utente se in data odierna è entrato nella biblio suggerita. Ritorna True o False
+def check_eligible_for_reward(utente):
     try:
-        print(utente.id_tessera)
-        
-        place = LogUnimo.objects.filter(id_tessera=utente.id_tessera,mode='IN')
-        print(place)
-        #timestamp=str(datetime.now())
-        for i in place:
-            if i.timestamp[0:10]==str(datetime.now())[0:10]:
-                if i.facolta == rowReward.suggestion:
-                    if utente.rewards_lastmodified != str(datetime.now())[0:10]:
-                        utente.rewards_lastmodified = str(datetime.now())[0:10]
-                        utente.rewards_counter = utente.rewards_counter + 1
-                        utente.save()
-                        return "FIRST"
-
-                    return "OK"
-                return "NO"
-    except(LogUnimo.DoesNotExist):
-        return False
+        reward_logs = RewardsLog.objects.get(id_user = utente.mail[0:6],date=str(datetime.now())[0:10])
+        unimo_logs = LogUnimo.objects.filter(id_tessera = utente.id_tessera, mode='IN')
     
+    except (LogUnimo.DoesNotExist, RewardsLog.DoesNotExist):
+        return False
+
+    for unimo_log in unimo_logs:
+        if unimo_log.timestamp[0:10] == str(datetime.now())[0:10]:
+            if unimo_log.facolta == reward_logs.suggestion:
+                return True
+            else:
+                return False
+    
+    return False
+
+# Riscatta il reward se l'utente ne ha diritto. Ritorna "DONE" se riscattato correttamente, "ALREADY" se già riscattato in giornata, "NO" se non ne aveva diritto
+def redeem_reward(utente):
+    if check_eligible_for_reward(utente):
+        if utente.rewards_lastmodified != str(datetime.now())[0:10]:
+            utente.rewards_lastmodified = str(datetime.now())[0:10]
+            utente.rewards_counter = utente.rewards_counter + 1
+            utente.save()
+            return "DONE"
+        else:
+            return "ALREADY"
+    else:
+        return "NO"
+
 
 @login_required
 def home(request):
@@ -229,7 +237,7 @@ def home(request):
         try:
             reward = request.POST['reward']
             if reward == "reward":
-                context['reward'] = check_reward(utente)
+                context['reward'] = redeem_reward(utente)
 
         except (KeyError):
             try:

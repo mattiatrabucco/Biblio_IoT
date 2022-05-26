@@ -34,18 +34,18 @@
             <bib-button class="button">
                 <form action="" method="post">
                   {% csrf_token %} 
-                  <button name="reward" value="reward">Posso ricevere un reward?</button>
+                  <button name="reward" value="reward">Riscatta il reward</button>
                 </form>
             </bib-button>
             
             <br><br>
-            {% if reward == "OK" %}
+            {% if reward == "ALREADY" %}
             <p>Reward già riscattato.</p>
             <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% elif reward == "NO" %}
             <p>Non sei ancora entrato nella biblioteca suggerita.</p>
             <p>Livello rewards {{ utente.rewards_counter }}</p>
-            {% elif reward == "FIRST" %}
+            {% elif reward == "DONE" %}
             <p>Riscattato ora il tuo reward di oggi!</p>
             <p>Livello rewards {{ utente.rewards_counter }}</p>
             {% endif %}
@@ -58,7 +58,7 @@
                 <div slot="content">
                     <form action="" method="post">
                         {% csrf_token %}
-                        Inserisci qui il tuo username Telegram:
+                        Inserisci qui il tuo username Telegram (senza @):
                         <input type="text" id="telegram" name="telegram" required>
                         <br><br>
                         <bib-button class="button">
