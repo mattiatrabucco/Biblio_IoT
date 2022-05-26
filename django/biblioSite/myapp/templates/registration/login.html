@@ -4,16 +4,7 @@
 {% comment %} Main page to authenticate users. {% endcomment %} 
 
 {% block head %}
-    <title>Django Mysite | Login</title>
-
-    <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://unpkg.com/minze@1.0.3" ></script>
-<script src="{% static 'js/main.js' %}"></script>
-<link rel="shortcut icon" href="">
-<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Accedi | Biblio IoT</title>
 {% endblock %}
 
 {% block body %}
@@ -32,27 +23,35 @@
         </bib-header>
 
         <bib-content>
-            {% if form.errors %}
-            <p style="color:red;">Your username and password didn't match, please try again.</p>
-        {% endif %}
-        
-        <form method="post"> 
-            {% csrf_token %} 
-            <p> {{ form.username.label_tag }} {{ form.username }} </p> 
-            <p> {{ form.password.label_tag }} {{ form.password }} </p>
+            <bib-wrap headline="Accedi">
+            </bib-wrap>
+
+                {% if form.errors %}
+                    <p style="color:red;">Your username and password didn't match, please try again.</p>
+                {% endif %}
+                
+                <p>Inserisci qui sotto il tuo UNIMORE ID e la tua password:</p>
+
+                <form style="padding: 25px;"  method="post"> 
+                    {% csrf_token %} 
+                    <p> <b>{{ form.username.label_tag }}</b> {{ form.username }} </p> 
+                    <p> <b>{{ form.password.label_tag }}</b> {{ form.password }} </p>
+                    
+                    {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    {% else %}
+                    <input type="hidden" name="next" value="/portal/" />
+                    {% endif %}
+                    
+                    <bib-button class="button">
+                        <input type="submit" value="Login" />
+                    </bib-button>
+                </form>
+
+            <br>
+            Se non hai ancora un account, <a href="/register">registrati qui.</a>
             
-            {% if next %}
-                <input type="hidden" name="next" value="{{ next }}" />
-            {% else %}
-                <input type="hidden" name="next" value="/portal/" />
-            {% endif %}
-                <bib-button class="button">
-                    <input type="submit" value="Login" />
-                </bib-button>
-        </form>
         </bib-content>
-
-
     </bib-main>
 </bib-app>
 {% endblock %}

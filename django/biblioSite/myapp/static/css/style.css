@@ -37,3 +37,14 @@ button, input[type="submit"], input[type="reset"]  {
 :not(:defined) {
   display: none;
 }
+
+#divMobileOnly { 
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  #divMobileOnly { 
+    display: flex;
+    justify-content: center;
+  }
+}
