@@ -107,7 +107,7 @@ Attualmente non hai un nome_utente Telegram, ma puoi rimediare! Sceglilo ora nel
 
 # Handle '/set'
 @bot.message_handler(commands=['set'])
-def send_bestbiblio(message):
+def send_set(message):
     
     bot.send_message(message.chat.id, "Visita l'area riservata del nostro sito <a href='http://192.168.23.113:8000/home'>premendo qui</a>", parse_mode="HTML")
 
@@ -116,8 +116,8 @@ def send_bestbiblio(message):
 def message(message):
     
     '''keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.add(telebot.types.KeyboardButton(text="Mostrami la miglior biblioteca in cui andare adesso /bestbiblio"))
-    keyboard.add(telebot.types.KeyboardButton(text="Ottieni il reward di oggi /reward"))
+    keyboard.add(telebot.types.KeyboardButton(text="Mostrami la miglior biblioteca in cui andare adesso"))
+    keyboard.add(telebot.types.KeyboardButton(text="Fammi ottenere il reward di oggi"))
     #keyboard.add(telebot.types.KeyboardButton(text="Ciao 2"))
     menu1 = telebot.types.InlineKeyboardMarkup()
     menu1.add(telebot.types.InlineKeyboardButton(text = 'Prova 1', callback_data ='first'))
