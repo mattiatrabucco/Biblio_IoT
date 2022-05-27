@@ -322,11 +322,12 @@ class BibWelcome extends MinzeElement {
     }
 
     .badge {
-      width: 25vh;
-      height: 100%;
+      width: 15%;
       position: absolute;
       right: 50px;
-      top: 0;
+      top: 0px;
+      bottom: 0px;
+      margin: auto;
     }
 
     @media (max-width: 768px) {
