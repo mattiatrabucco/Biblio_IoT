@@ -19,8 +19,8 @@ bot = telebot.TeleBot(API_TOKEN)
 # Handle '/start'
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.add(telebot.types.KeyboardButton(text="Bot, mostrami la miglior biblioteca in cui andare adesso"))
+    #keyboard = telebot.types.ReplyKeyboardMarkup()
+    #keyboard.add(telebot.types.KeyboardButton(text="Bot, mostrami la miglior biblioteca in cui andare adesso"))
 
     if message.from_user.username is None:
         bot.send_message(message.chat.id, """\
@@ -29,7 +29,7 @@ Ciao, sono il bot di Biblio IoT!
 N.B.: per funzionare correttamente devi possedere un nome utente Telegram e impostarlo nell'area riservata del nostro sito.
 
 Premi /help per saperne di più.\
-""", reply_markup=keyboard)
+""")
     else:
         bot.send_message(message.chat.id, """\
 Ciao, sono il bot di Biblio IoT!
@@ -40,7 +40,7 @@ Premi /set per impostare il nome utente sul nostro sito (devi averlo già su Tel
 Premi /bestbiblio per ottenere il suggerimento della miglior biblioteca in cui andare ora.
 Premi /reward per ottenere il reward del giorno.
 Premi /help per saperne di più.\
-""", reply_markup=keyboard)
+""")
 
 # Handle '/help'
 @bot.message_handler(commands=['help'])
