@@ -9,17 +9,19 @@ main.py
 - [ ] Sanitize some input (line 62)
 - [ ] Insert/remove functions must be more generic to allow a portable code (e.g. using DEFINEs)
 - [ ] Testing
-- [ ] Create python directory
+- [ ] Creare directory Python
+- [ ] Migliorare supporto al display (mostrare biblio full, estensione e nome utente)
 - [x] GOING IN
 - [x] GOING OUT
 
 script.py
 - [ ] Script to clean DB 
+- [ ] Capire come orchestrare tutti i vari script
 
 Biblio_IoT.ino
 - [ ] Testing
 - [ ] Delay tuning
-- [ ] Create arduino directory
+- [ ] Creare directory Arduino 
 
 DB
 - [x] Tabella counter
@@ -28,6 +30,7 @@ DB
 
 DJANGO
 - [x] AULA ESTESA
+- [ ] Controllo orari aula estesa
 - [x] Integrazione orario aule su excel
 - [x] Reward da log di ingresso e se ha pigiato bottone
 - [ ] Funzionalita' pagina admin di visualizzare, aggiungere e rimuovere utenti (quando rimuovi un utente va rimosso da entrambe le tabelle sia utenti sia tessere_unimore e per ora da problemi la rimozione da tessere_unimore)
@@ -37,7 +40,7 @@ DJANGO
 - [ ] Mostrare le ore di punta tipo: "Peak hours are 6pm, 7pm, and 8pm"
 - [x] Visualizzare capienza biblio
 - [x] Completare funzione/algoritmo where_to_go --> definire priorità e considerazioni che deve fare
-- [ ] UX
+- [x] UX
 - [x] Modificare tabella tessere e togliere password --> pensare tipo a campo booleano is_registered
 - [x] Login/Register user
 - [x] Registration controllare campo is None
