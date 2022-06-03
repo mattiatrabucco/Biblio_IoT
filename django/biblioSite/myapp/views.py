@@ -1,5 +1,5 @@
 #from asyncio.windows_events import NULL
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 from django.http import HttpResponse
 from django.template import loader
@@ -48,7 +48,7 @@ def index(request):
         bib = {}
         if biblio.opening_hours is not None:
             opening_hours = json.loads(biblio.opening_hours)
-            open_from = opening_hours[calendar.day_name[datetime.now().weekday()]][0:5]
+            open_from = opening_hours[calendar.day_name[datetime.now().weekday()]][0:5] #orario apertura
             try:
                 open_from = datetime.strptime(open_from, "%H:%M")
                 open_from = open_from.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
@@ -170,19 +170,58 @@ def add_reward_log(utente,biblio_suggestion):
         print("creato")
         reward.save()
 
+#Checks if a biblio object is open between 1h ahead from now
+def biblio_is_open(biblio):
+    if biblio.opening_hours is not None:
+        opening_hours = json.loads(biblio.opening_hours)
+        open_from = opening_hours[calendar.day_name[datetime.now().weekday()]][0:5] #orario apertura
+        try:
+            open_from = datetime.strptime(open_from, "%H:%M")
+            open_from = open_from.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
+        except:
+            #Ho trovato N/A
+            return False # ho trovato "N/A"
+
+        open_from -= timedelta(hours=1)
+        
+        open_until = opening_hours[calendar.day_name[datetime.now().weekday()]][6:]
+        open_until = datetime.strptime(open_until, "%H:%M")
+        open_until = open_until.replace(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
+        
+        if open_from < datetime.now() < open_until:
+            return True
+        else:
+            #Fuori orario
+            return False
+
 def where_to_go(utente):
-    biblio = Biblioteche.objects.get(nome = biblioteche_facolta[utente.facolta])
-    cap = int((biblio.count / biblio.capienza) * 100)
-    if cap < 50:
+    biblio = Biblioteche.objects.get(nome = biblioteche_facolta[utente.facolta]) #biblioteca della facoltà dell'utente
+    biblio_found = False # booleano per capire se esiste alemeno un biblioteca aperta
+    first_biblio = False # booleano per capire se la biblioteca della facoltà dell'utente è aperta
+    
+    if biblio_is_open(biblio):
+        biblio_found = True
+        first_biblio = True
+        cap = int((biblio.count / biblio.capienza) * 100)
+        if cap < 50: #la consigla se sotto al 50%
+            add_reward_log(utente,biblio.nome)
+            return biblio.nome
+    
+    biblio_all = Biblioteche.objects.all()
+    for i in biblio_all:
+        bib = biblio_is_open(i)
+        print(bib)
+        if bib:
+            if (i.nome != biblio.nome and (i.count / i.capienza) < (biblio.count / biblio.capienza)) or first_biblio is False:
+                biblio = i #alla fine biblio contiene la biblioteca con percentuale di occupancy minore
+                biblio_found = True
+                first_biblio = True
+
+    if biblio_found:
         add_reward_log(utente,biblio.nome)
         return biblio.nome
     else:
-        biblio_all = Biblioteche.objects.all()
-        for i in biblio_all:
-            if i.nome != biblio.nome and (i.count / i.capienza) < (biblio.count / biblio.capienza):
-                biblio=i
-        add_reward_log(utente,biblio.nome)
-        return biblio.nome
+        return "N/A"
 
 # Ricerca tra i log dell'utente se in data odierna è entrato nella biblio suggerita. Ritorna True o False
 def check_eligible_for_reward(utente):
@@ -237,11 +276,20 @@ def home(request):
     except (TessereUnimore.DoesNotExist):
         return redirect('myapp:index')
     
+    dove_andare = where_to_go(utente)
+
     context = {
         'utente' : utente,
-        'where_to_go' : where_to_go(utente),
+        'where_to_go' : dove_andare,
         'rewards_level': rewards_level(utente.rewards_counter)
-        }
+    }
+
+    try:
+        biblio_gmaps = Biblioteche.objects.get(nome = dove_andare)
+        context["gmaps"] = biblio_gmaps.address
+        print(biblio_gmaps.address)
+    except (Biblioteche.DoesNotExist):
+        pass
 
     if request.method == 'GET':
         return HttpResponse(template.render(context, request))

@@ -265,7 +265,7 @@ class BibContent extends MinzeElement {
 BibContent.define()
 
 class BibWelcome extends MinzeElement {
-  attrs = ['name', 'biblio', 'rewards_level']
+  attrs = ['name', 'biblio', 'rewards_level', 'gmaps']
 
   html = () => `
   <div>
@@ -274,7 +274,8 @@ class BibWelcome extends MinzeElement {
   </div>
   
   <div>
-    <p class="text-consiglio">Oggi ti consiglio di andare in <b>${this.biblio ?? ''}</b></p>
+    <p style="${this.biblio == "N/A" ? 'display:none' : ''}" class="text-consiglio">Oggi ti consiglio di andare in <a href="${this.gmaps ?? ''}" target="_blank">${this.biblio ?? ''}</a></p>
+    <p style="${this.biblio == "N/A" ? '' : 'display:none'}" class="text-consiglio">Nessun consiglio disponibile.</b></p>
     <h2 class="headline"></h2>
   </div>
   
