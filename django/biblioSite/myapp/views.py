@@ -1,6 +1,7 @@
 #from asyncio.windows_events import NULL
 from datetime import datetime, timedelta
 import calendar
+from tokenize import String
 from django.http import HttpResponse
 from django.template import loader
 import re
@@ -14,9 +15,16 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, get_user_model
-from .models import Biblioteche, LogUnimo, RewardsLog, TessereUnimore
+from .models import BiblioIngmoCurrent, Biblioteche, LogUnimo, RewardsLog, TessereUnimore
 import string
 import json
+
+from django.db import connection
+
+from rest_framework import status    
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
 
 def checkHEX(card_id):
     return all(c in string.hexdigits for c in card_id)
@@ -431,3 +439,115 @@ def remove_student(request):
     
     context = {"superuser":None}
     return HttpResponse(template.render(context, request))
+
+@csrf_exempt
+@api_view(['GET'])
+def auth_card(request, facolta, card_id):
+    if request.method == "GET":
+        if not card_id:
+            return Response({'errore': 'non è una card ID'}, status=status.HTTP_404_NOT_FOUND)
+        if not isinstance(card_id, str):
+            return Response({'errore': 'formato errato'}, status=status.HTTP_404_NOT_FOUND)
+        if len(card_id) != 8:
+            return Response({'errore': 'lunghezza errata'}, status=status.HTTP_404_NOT_FOUND)
+        if not checkHEX(card_id):
+            return Response({'errore': 'non una carta valida'}, status=status.HTTP_404_NOT_FOUND)
+        
+        card_id = ' '.join(card_id[i:i+2] for i in range(0, len(card_id), 2))
+        try:
+            utente = TessereUnimore.objects.get(id_tessera=card_id)
+
+            if facolta == "ingmo":
+                try:
+                    log_utente = BiblioIngmoCurrent.objects.get(id_tessera=utente)
+                    
+                except (BiblioIngmoCurrent.DoesNotExist):
+                    return Response({'OK': False}, status=status.HTTP_200_OK)
+                
+                
+                return Response({'OK': True}, status=status.HTTP_200_OK)
+            
+            return Response({'OK': 'not ingmo'}, status=status.HTTP_200_OK) # TODO: correct
+        except (TessereUnimore.DoesNotExist):
+            return Response({'errore': 'nessun dato disponibile'}, status=status.HTTP_404_NOT_FOUND)
+
+@csrf_exempt
+@api_view(['POST'])
+def library(request, biblioteca, card_id):
+    if request.method == "POST":
+        if not card_id:
+            return Response({'errore': 'non è una card ID'}, status=status.HTTP_404_NOT_FOUND)
+        if not isinstance(card_id, str):
+            return Response({'errore': 'formato errato'}, status=status.HTTP_404_NOT_FOUND)
+        if len(card_id) != 8:
+            return Response({'errore': 'lunghezza errata'}, status=status.HTTP_404_NOT_FOUND)
+        if not checkHEX(card_id):
+            return Response({'errore': 'non una carta valida'}, status=status.HTTP_404_NOT_FOUND)
+        card_id = ' '.join(card_id[i:i+2] for i in range(0, len(card_id), 2))
+        
+        if not request.body:
+            return Response({'errore': 'non un body valido'}, status=status.HTTP_404_NOT_FOUND)
+
+        body = json.loads(request.body)
+
+        if "way" not in body:
+            return Response({'errore': 'non una way valida'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if body["way"] not in ["IN", "OUT"]:
+            return Response({'errore': 'non una way valida'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if biblioteca == "ingmo":
+            #aggiornare count su Biblioteche
+            try:
+                biblio = Biblioteche.objects.get(nome=biblioteca)
+
+                if body["way"] == "IN": #GOING IN
+                    if biblio.count >= biblio.capienza:
+                        return Response({'errore': 'nessun dato disponibile'}, status=status.HTTP_404_NOT_FOUND)
+                    
+                    biblio.count = biblio.count + 1
+                    biblio.save()
+
+                    #inserire log su LogUnimo
+                    user = TessereUnimore.objects.get(id_tessera=card_id)
+                    log = LogUnimo.objects.create(id_tessera=user, timestamp=datetime.now(), mode="IN", facolta=biblioteca)
+                    log.save()
+
+                    #aggiungere id su BiblioIngmoCurrent
+                    log = BiblioIngmoCurrent.objects.create(id_tessera=user, timestamp=datetime.now())
+                    log.save()
+
+                    return Response({'OK': 'entrata corretta'}, status=status.HTTP_200_OK)
+
+                elif body["way"] == "OUT": #GOING OUT
+                    if biblio.count > 0:
+                        biblio.count = biblio.count - 1
+                        biblio.save()
+                    
+                    #inserire log su LogUnimo
+                    user = TessereUnimore.objects.get(id_tessera=card_id)
+                    log = LogUnimo.objects.create(id_tessera=user, timestamp=datetime.now(), mode="OUT", facolta=biblioteca)
+                    log.save()
+
+                    #rimuovere id su BiblioIngmoCurrent
+                    log = BiblioIngmoCurrent.objects.get(id_tessera=user)
+                    log.delete()
+                    
+                    return Response({'OK': 'uscita corretta'}, status=status.HTTP_200_OK)
+                    
+            except (Biblioteche.DoesNotExist):
+                return Response({'errore': 'nessun dato disponibile'}, status=status.HTTP_404_NOT_FOUND)
+            
+        return Response({'errore': 'nessun dato disponibile'}, status=status.HTTP_404_NOT_FOUND)
+
+@csrf_exempt
+@api_view(['GET'])
+def all_auth_cards(request):
+    if request.method == "GET":
+        try:
+            card_list = list(TessereUnimore.objects.values_list('id_tessera', flat=True))
+            
+            return Response({'OK': card_list}, status=status.HTTP_200_OK) 
+
+        except (TessereUnimore.DoesNotExist):
+            return Response({'errore': 'nessun dato disponibile'}, status=status.HTTP_404_NOT_FOUND)
