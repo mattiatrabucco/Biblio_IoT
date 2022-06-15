@@ -13,6 +13,7 @@ from myapp.models import TessereUnimore
 from myapp.views import where_to_go, redeem_reward
 
 API_TOKEN = config("TELEGRAM_SECRET_KEY")
+API_URL = "http://192.168.75.123:8000"
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -109,7 +110,7 @@ Attualmente non hai un nome_utente Telegram, ma puoi rimediare! Sceglilo ora nel
 @bot.message_handler(commands=['set'])
 def send_set(message):
     
-    bot.send_message(message.chat.id, "Visita l'area riservata del nostro sito <a href='http://192.168.23.113:8000/home'>premendo qui</a>", parse_mode="HTML")
+    bot.send_message(message.chat.id, f"Visita l'area riservata del nostro sito <a href='{API_URL}/home'>premendo qui</a>", parse_mode="HTML")
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 @bot.message_handler(func=lambda message: True)
