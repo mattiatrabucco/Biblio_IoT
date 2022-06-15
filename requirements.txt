@@ -3,3 +3,4 @@ django
 python-decouple
 openpyxl
 pyTelegramBotAPI
+djangorestframework
