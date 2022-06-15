@@ -1,6 +1,6 @@
-env
 django/biblioSite/.env
+script/excel/*/~$*
+env
 .vscode
 .DS_Store
 .env
-script/excel/*/~$*
