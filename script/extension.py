@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json
 from openpyxl import load_workbook 
 import calendar
+import time
 
 def find_index(sheet, column_count, orario_biblio):
     for i in range(3, column_count + 1):
@@ -125,35 +126,33 @@ def close_biblio(nome_biblio):
     update_db("biblioteche", f"extension = ('closed')", f"nome = '{nome_biblio}'", "../tessere.db")
     update_db("biblioteche", "is_extended = 0", f"nome = '{nome_biblio}'", "../tessere.db")
 
-def main():
-    biblioteche = collect_biblioteche() 
-    
-    for biblioteca in biblioteche:
-        nome = biblioteca[0]
-        count = biblioteca[1]
-        capienza = biblioteca[2]
-        is_extended = biblioteca[3]
-        opening_hours = json.loads(biblioteca[5]) if biblioteca[5] != "N/A" else "N/A"
-        soglia = capienza - count
-        # print("Nome: " + nome)
-        # print("Count: " + str(count))
-        # print("is_extended: " + str(is_extended))
-        # print("opening_hours: " + str(opening_hours))
-        # print("Soglia: " + str(soglia))
 
-        if is_extended == True:
-            extension = json.loads(biblioteca[4])
-            #print(nome)
-            #print(datetime.strptime(extension["open_until"], "%H:%M"))
-            #print(datetime.strptime(str(datetime.now())[11:16], '%H:%M'))
-            if datetime.strptime(extension["open_until"], "%H:%M") < datetime.strptime(str(datetime.now())[11:16], '%H:%M'):
-                print("Sto chiudendo l'estensione di biblio " + nome)
-                close_biblio(nome)
-        
-        if soglia <= 2 and is_extended == False:
-            if opening_hours[calendar.day_name[datetime.now().weekday()]] != "N/A":
-                print("Provo ad estendere biblio " + nome)
-                extend_biblio(nome, opening_hours[calendar.day_name[datetime.now().weekday()]])
+def main():
+    starttime = time.time()
+    
+    while True:
+        if  (time.time() - starttime) > 60: 
+            biblioteche = collect_biblioteche() 
+            
+            for biblioteca in biblioteche:
+                nome = biblioteca[0]
+                count = biblioteca[1]
+                capienza = biblioteca[2]
+                is_extended = biblioteca[3]
+                opening_hours = json.loads(biblioteca[5]) if biblioteca[5] != "N/A" else "N/A"
+                soglia = capienza - count
+
+                if is_extended == True:
+                    extension = json.loads(biblioteca[4])
+                    if datetime.strptime(extension["open_until"], "%H:%M") < datetime.strptime(str(datetime.now())[11:16], '%H:%M'):
+                        print("Sto chiudendo l'estensione di biblio " + nome)
+                        close_biblio(nome)
+                
+                if soglia <= 2 and is_extended == False:
+                    if opening_hours[calendar.day_name[datetime.now().weekday()]] != "N/A":
+                        print("Provo ad estendere biblio " + nome)
+                        extend_biblio(nome, opening_hours[calendar.day_name[datetime.now().weekday()]])
+            starttime = time.time()
 
 
 if __name__ == "__main__":
