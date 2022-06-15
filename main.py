@@ -1,3 +1,4 @@
+import requests
 import serial
 import sqlite3
 from datetime import datetime
@@ -15,11 +16,8 @@ def select_from_db(what, table, db_name):
     con.close()
     return rows
 
-def collect_authorized_cards():
-    return select_from_db("id_tessera", "tessere_unimore", "tessere.db")
-
 def collect_current_cards():
-    return select_from_db("id_tessera", "biblio_ingmo_current", "tessere.db")
+    return select_from_db("id_tessera", "presenze_attuali", f"{facolta}.db")
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def insert_in_db(table, value, db_name):
@@ -51,8 +49,7 @@ def log_remove(cardid):
     con.close()
 
 def insert_in_bibliomo(card_id):
-    insert_in_db("biblio_ingmo_current", card_id, "tessere.db")
-    log_insert(card_id)
+    insert_in_db("presenze_attuali", card_id, f"{facolta}.db")
 
 # BE CAREFUL: NOT SAFE FROM SQL INJECTION!
 def del_from_db(table, column, value, db_name):
@@ -66,15 +63,11 @@ def del_from_db(table, column, value, db_name):
     con.close()
 
 def remove_from_bibliomo(card_id):
-    del_from_db("biblio_ingmo_current", "id_tessera", card_id, "tessere.db")
-    log_remove(card_id)
+    del_from_db("presenze_attuali", "id_tessera", card_id, f"{facolta}.db")
 
 def setup_serial_connection():
     # ----- WINDOWS -----
-    #return serial.Serial('COM3')
-
-    # -----  MACOS  -----
-    return serial.Serial('/dev/tty.usbmodem1101')
+    return serial.Serial('COM3')
 
 # True = GOING IN, False = GOING OUT
 def update_counter(mode):
@@ -114,81 +107,106 @@ def update_counter(mode):
     con.close()
     return True
 
-def main_loop(authorized_cards, arduino_serial):
+class Bridge:
+    def __init__(self):
+        self.api_ip = '192.168.75.123:8000'
+        self.api_version = 'api/v1'
+        self.in_buffer = []
+        self.arduino_serial = serial.Serial('/dev/tty.usbmodem1201') # -----  MACOS  -----
+        self.is_inside = False
+        self.auth_cards = []
+        self.capacity=3
+        self.counter=0
+
+        response = requests.get(f'http://{self.api_ip}/{self.api_version}/all_auth_cards')
+        if response.status_code == 200:
+            print("API: list of cards loaded")
+            self.auth_cards = response.json()['OK']
+            print(self.auth_cards)
     
-    while True:
+    def is_auth_card(self, card_id):
+        if len(self.auth_cards) != 0:
+            upd_card = ' '.join(card_id[i:i+2] for i in range(0, len(card_id), 2))
+            return upd_card in self.auth_cards
+        else:
+            response = requests.get(f'http://{self.api_ip}/{self.api_version}/auth_card/{facolta}/{card_id}')
+            if response.status_code == 200:
+                print("API: card ok")
+                self.is_inside = response.json()['OK']
+                return True
+            return False
+    
+    def read_card(self):
+        card_id = b''.join(self.in_buffer[1:]).decode()
+        upd_card = ' '.join(card_id[i:i+2] for i in range(0, len(card_id), 2))
+        reader_id = self.in_buffer[0].decode()
         
-        #TODO: Sanitize input!
-        line_from_serial = arduino_serial.readline()
-        line_from_serial = line_from_serial.decode("utf-8")[:-2]
-        NFCreader_id = line_from_serial[7] # 0 --> GOING IN, 1 --> GOING OUT
+        print(card_id)
+        print(reader_id)
         
-        print(line_from_serial)
-        #print(NFCreader_id)
+        if self.is_auth_card(card_id): # API request: check if it's an authorized Unimore card
+            cur_card_list = collect_current_cards()
+            print(cur_card_list)
 
-        if "Card UID" in line_from_serial: # If the Arduino has read a card
-            
-            card_id = line_from_serial[-11:]
-
-            if card_id in authorized_cards: # If it's an authorized Unimore card
-                #print(card_id)
-
-                # GOING IN 
-                if NFCreader_id == '0':    
-                    cards_already_inside = collect_current_cards()
-
-                    if card_id not in cards_already_inside: # If it's not already inside
-
-                        if update_counter(True):
-                            print("OK: authorized card can enter")
-                            arduino_serial.write(b"OK\n")
-                            insert_in_bibliomo(card_id)
-                        else:
-                            print("ERROR: biblio full")
-                            arduino_serial.write(b"ERROR: full\n") 
-
+            # GOING IN 
+            if reader_id == '0':    
+                #if not self.is_inside: # If it's not already inside
+                if upd_card not in cur_card_list: # If it's not already inside
+                    if self.counter < self.capacity:
+                        self.arduino_serial.write(b"OK")
+                        self.counter += 1
+                        print("API OK: authorized card can enter")
+                        insert_in_bibliomo(upd_card)
+                        response = requests.post(f'http://{self.api_ip}/{self.api_version}/library/{facolta}/{card_id}/', json={"way":"IN"})
                     else:
-                        print("ERROR: authorized card already inside")
-                        arduino_serial.write(b"ERROR: already inside\n") 
-                
-                # GOING OUT
-                elif NFCreader_id == '1': 
-                    cards_already_inside = collect_current_cards()
+                        self.arduino_serial.write(b"NO") 
+                        print("ERROR: biblio full")
 
-                    if card_id in cards_already_inside: # If it's inside
-
-                        if update_counter(False):
-                            print("OK: authorized card can exit")
-                            arduino_serial.write(b"OK\n")
-                            remove_from_bibliomo(card_id)
-                        else:
-                            print("ERROR: db error")
-                            arduino_serial.write(b"ERROR: db\n") 
-                        
-
-                    else:
-                        print("ERROR: authorized card not inside")
-                        arduino_serial.write(b"ERROR: not inside\n") 
-                
-                # ERROR
                 else:
-                    print("READER ERROR")
+                    self.arduino_serial.write(b"NO") 
+                    print("ERROR: authorized card already inside")
+            
+            # GOING OUT
+            elif reader_id == '1': 
+                #if self.is_inside: # If it's inside
+                if upd_card in cur_card_list: # If it's inside
 
+                    if self.counter > 0:
+                        self.arduino_serial.write(b"OK")
+                        self.counter -= 1
+                        print("API OK: authorized card can exit")
+                        remove_from_bibliomo(upd_card)
+                        response = requests.post(f'http://{self.api_ip}/{self.api_version}/library/{facolta}/{card_id}/', json={"way":"OUT"})
+                    else:
+                        self.arduino_serial.write(b"NO") 
+                        print("ERROR: db error")
+
+                else:
+                    self.arduino_serial.write(b"NO") 
+                    print("ERROR: authorized card not inside")
+            
+            # ERROR
             else:
-                print("ERROR: not authorized card")
-                arduino_serial.write(b"ERROR: not authorized\n")    
+                print("READER ERROR")
 
+        else:
+            self.arduino_serial.write(b"NO")   
+            print("ERROR: not authorized card")
 
-def main():
-    authorized_cards = collect_authorized_cards()
-    
-    print(authorized_cards)
-
-    arduino_serial = setup_serial_connection()
-
-    main_loop(authorized_cards, arduino_serial)
-
+    def loop(self):
+        
+        while True:
+            if self.arduino_serial.in_waiting > 0:
+                value = self.arduino_serial.read(1)
+                if value == b'\xFF':
+                    self.read_card()
+                    self.in_buffer = []
+                else:
+                    self.in_buffer.append(value)
 
 
 if __name__ == "__main__":
-    main()
+    
+
+    my_bridge = Bridge()
+    my_bridge.loop()
