@@ -141,8 +141,10 @@ class TessereUnimore(models.Model):
         db_table = 'tessere_unimore'
         verbose_name_plural = "tessere UniMoRe"
 
+
 class BiblioIngmoCurrent(models.Model):
-    id_tessera = models.ForeignKey(TessereUnimore,on_delete=models.CASCADE)
+    id_tessera = models.ForeignKey(TessereUnimore,on_delete=models.CASCADE,db_column='id_tessera')
+    timestamp = models.TextField(blank=True, primary_key=True)
 
     class Meta:
         managed = False
