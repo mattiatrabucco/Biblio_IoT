@@ -31,4 +31,4 @@ Il dispositivo relizzato con Arduino usa:
 per simulare un tornello per l'accesso ad una biblioteca.
 
 ### Piedinatura
-![piedinatura scheda Arduino Mega](https://github.com/mattiatrabucco/Biblio_IoT/blob/master/docs/piedinatura.png)
+![piedinatura scheda Arduino Mega](https://github.com/mattiatrabucco/Biblio_IoT/blob/master/docs/static/piedinatura.png)
